@@ -1,0 +1,11 @@
+context:
+  include:
+    - context/product-brief.md
+    - context/brand-guide.md
+    - context/ui-tokens.json
+    - context/tone-and-copy.md
+    - context/rules.md
+    - aidd/rules/
+    - aidd/agents/
+    - aidd/memory-bank/
+

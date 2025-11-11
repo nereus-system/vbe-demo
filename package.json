@@ -1,0 +1,31 @@
+{
+  "name": "vbe-demo",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "next": "^14.2.33",
+    "@mui/material": "^6.1.8",
+    "@mui/icons-material": "^6.1.8",
+    "@emotion/react": "^11.13.5",
+    "@emotion/styled": "^11.13.5"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3",
+    "@types/node": "^22.9.1",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "eslint": "^8.57.1",
+    "eslint-config-next": "^14.2.33",
+    "prettier": "^3.4.2",
+    "prettier-plugin-organize-imports": "^4.1.0"
+  }
+}
+
