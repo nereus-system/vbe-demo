@@ -25,7 +25,6 @@ import {
   ExpandMore,
   ExpandLess,
   UnfoldMore,
-  Menu as MenuIcon,
   TrackChanges,
   DarkMode,
   LightMode,
@@ -68,19 +67,27 @@ const getNavItems = (): NavItem[] => [
       icon: 'nature',
       children: [
         {
-          id: 'company-carbon-footprint',
-          label: 'Company Carbon Footprint',
+          id: 'corporate-carbon-footprint',
+          label: 'Corporate Carbon Footprint',
           children: [
-            { id: 'ccf-explorer', label: 'CCF Explorer', path: '/footprint/82' },
-            { id: 'ccf-analysis', label: 'CCF Analysis', path: '/footprint/82/analysis' },
+            { id: 'footprint-explorer', label: 'Footprint Explorer', path: '/footprint/82' },
+            { id: 'footprint-analysis', label: 'Footprint Analysis', path: '/footprint/82/analysis' },
           ],
         },
         {
-          id: 'supply-chain-hub',
-          label: 'Supply Chain Hub',
+          id: 'products-carbon-footprint',
+          label: 'Products Carbon Footprint',
           children: [
-            { id: 'supply-chain-explorer', label: 'Supply Chain Explorer', path: '/supply-chain/explorer' },
-            { id: 'supply-chain-analysis', label: 'Supply Chain Analysis', path: '/supply-chain/analysis' },
+            { id: 'product-catalog', label: 'Product Catalog', path: '/products-catalog' },
+            { id: 'product-analysis', label: 'Product Analysis', path: '/products-analysis' },
+          ],
+        },
+        {
+          id: 'supply-chain-footprint',
+          label: 'Supply Chain Footprint',
+          children: [
+            { id: 'supply-chain-explorer', label: 'Supply Chain Explorer', path: '/supply-chain-explorer' },
+            { id: 'supply-chain-analysis', label: 'Supply Chain Analysis', path: '/supply-chain-analysis' },
           ],
         },
       ],
@@ -91,12 +98,12 @@ const getNavItems = (): NavItem[] => [
       icon: 'timeline',
       children: [
         {
-          id: 'strategy-planning',
-          label: 'Strategy Planning',
+          id: 'planning-strategy',
+          label: 'Planning Strategy',
           children: [
-            { id: 'strategy-settings', label: 'Strategy Settings', path: '/strategy' },
-            { id: 'levers-library', label: 'Levers Library', path: '/levers' },
-            { id: 'roadmap-overview', label: 'Roadmap Overview', path: '/strategy/roadmap' },
+            { id: 'strategy-settings', label: 'Strategy Settings', path: '/strategy-settings' },
+            { id: 'levers-library', label: 'Levers Library', path: '/levers-library' },
+            { id: 'roadmap-overview', label: 'Roadmap Overview', path: '/roadmap-overview' },
           ],
         },
         {
@@ -104,16 +111,16 @@ const getNavItems = (): NavItem[] => [
           label: 'Progress Tracking',
           icon: 'track-changes',
           children: [
-            { id: 'reduction-tracking', label: 'Reduction Tracking', path: '/strategy/engage-monitor' },
-            { id: 'financial-analysis', label: 'Financial Analysis', path: '/strategy/financial-analysis' },
-            { id: 'teams-dashboard', label: 'Teams Dashboard', path: '/strategy/teams' },
+            { id: 'reduction-tracking', label: 'Reduction Tracking', path: '/reduction-tracking' },
+            { id: 'financial-analysis', label: 'Financial Analysis', path: '/financial-analysis' },
+            { id: 'teams-dashboard', label: 'Teams Dashboard', path: '/teams-dashboard' },
           ],
         },
       ],
     },
     {
       id: 'data-computation',
-      label: 'Data & Computation',
+      label: 'My Data & Computation',
       icon: 'storage',
       children: [
         {
@@ -121,25 +128,33 @@ const getNavItems = (): NavItem[] => [
           label: 'Company Carbon Footprint',
           children: [
             { id: 'data-ingestion', label: 'Data Ingestion', path: '/data-ingestion' },
-            { id: 'footprint-builder', label: 'Footprint Builder', path: '/builder' },
-            { id: 'footprint-ef-matching', label: 'Footprint EF Matching', path: '/footprint/82/ef-matching-review' },
+            { id: 'footprint-builder', label: 'Footprint Builder', path: '/footprint-builder' },
+            { id: 'footprint-ef-matching', label: 'Footprint EF Matching', path: '/footprint-ef-matching' },
+          ],
+        },
+        {
+          id: 'product-carbon-footprint-data',
+          label: 'Product Carbon Footprint',
+          children: [
+            { id: 'data-set', label: 'Data Set', path: '/data-set' },
+            { id: 'computation-engine', label: 'Computation Engine', path: '/computation-engine' },
           ],
         },
         {
           id: 'emission-factors',
           label: 'Emission Factors',
           children: [
-            { id: 'ef-hub', label: 'Emission Factors Hub', path: '/ef-hub' },
-            { id: 'ef-matching-rules', label: 'EF Matching Rules', path: '/ef-matching-configurations' },
+            { id: 'ef-hub', label: 'EF Hub', path: '/ef-hub' },
+            { id: 'matching-rules', label: 'Matching Rules', path: '/matching-rules' },
           ],
         },
       ],
     },
     {
       id: 'reporting',
-      label: 'Report',
+      label: 'Reports',
       icon: 'description',
-      path: '/reporting',
+      path: '/reports',
     },
     {
       id: 'documentation',
@@ -231,18 +246,21 @@ export function SideNav({
   const navItems = getNavItems()
   const [expanded, setExpanded] = useState<Record<string, boolean>>({
     'my-footprint': true,
-    'company-carbon-footprint': true,
-    'supply-chain-hub': true,
+    'corporate-carbon-footprint': true,
+    'products-carbon-footprint': true,
+    'supply-chain-footprint': true,
     'my-reduction-journey': true,
-    'strategy-planning': true,
+    'planning-strategy': true,
     'progress-tracking': true,
     'data-computation': true,
     'company-carbon-footprint-data': true,
+    'product-carbon-footprint-data': true,
     'emission-factors': true,
   })
   const [companyMenuAnchor, setCompanyMenuAnchor] = useState<null | HTMLElement>(null)
   const [isPinned, setIsPinned] = useState(true)
-  const [isCollapsed, setIsCollapsed] = useState(false)
+  const [isCollapsed, setIsCollapsed] = useState(true)
+  const [justExpanded, setJustExpanded] = useState(false)
   const [themeMode, setThemeMode] = useState<'light' | 'dark'>(currentTheme)
 
   useEffect(() => {
@@ -358,7 +376,14 @@ export function SideNav({
   }
 
   const handleToggleCollapse = () => {
-    setIsCollapsed(!isCollapsed)
+    const newCollapsed = !isCollapsed
+    setIsCollapsed(newCollapsed)
+    // If expanding (going from collapsed to expanded), trigger animations
+    if (newCollapsed === false) {
+      setJustExpanded(true)
+      // Reset after animation completes
+      setTimeout(() => setJustExpanded(false), 400)
+    }
   }
 
   const handleThemeToggle = () => {
@@ -383,18 +408,19 @@ export function SideNav({
     if (hasChildren && level === 0) {
       // Top-level expandable item
       return (
-        <ListItem key={item.id} disablePadding>
-          <Box sx={{ width: '100%' }}>
+        <ListItem key={item.id} disablePadding sx={{ width: '100%' }}>
+          <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '8px' }}>
             <ListItemButton
               onClick={() => toggleExpand(item.id)}
               sx={{
                 height: 48,
                 px: 1,
                 py: 0.75,
-                borderRadius: 1,
+                borderRadius: '8px',
                 cursor: 'pointer',
+                gap: 1,
                 '&:hover': {
-                  backgroundColor: 'action.hover',
+                  backgroundColor: '#2A2A2C',
                 },
                 '&:focus-visible': {
                   outline: `2px solid ${tokens.palette.border.focus.dark}`,
@@ -403,53 +429,57 @@ export function SideNav({
               }}
             >
               {item.icon && typeof item.icon === 'string' && iconMap[item.icon] && (
-                <Box sx={{ display: 'flex', alignItems: 'center', mr: 1, color: 'text.primary' }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', color: '#ffffff', flexShrink: 0 }}>
                   {iconMap[item.icon]}
                 </Box>
               )}
               {item.icon && typeof item.icon !== 'string' && (
-                <Box sx={{ display: 'flex', alignItems: 'center', mr: 1, color: 'text.primary' }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', color: '#ffffff', flexShrink: 0 }}>
                   {item.icon}
                 </Box>
               )}
-              <Stack direction="row" spacing={1} sx={{ flexGrow: 1, alignItems: 'center' }}>
-                <Typography
-                  variant="body1"
-                  sx={{
-                    fontWeight: 400,
-                    fontSize: 14,
-                    lineHeight: 1.43,
-                    color: 'text.primary',
-                    flexGrow: 1,
-                  }}
-                  className="menu-label"
-                >
-                  {item.label}
-                </Typography>
-                <Box />
-              </Stack>
-              <Stack direction="row" spacing={0.5}>
-                <Box
-                  sx={{
-                    width: 18,
-                    height: 18,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: 'text.primary',
-                    transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
-                    transition: 'transform 0.2s ease-in-out',
-                  }}
-                >
-                  <ExpandMore sx={{ fontSize: 18 }} />
-                </Box>
-              </Stack>
+              <Typography
+                sx={{
+                  fontWeight: 700,
+                  fontSize: 14,
+                  lineHeight: 1.43,
+                  letterSpacing: '0.17px',
+                  color: '#ffffff',
+                  flexGrow: 1,
+                  opacity: isCollapsed ? 0 : (justExpanded ? 0 : 1),
+                  transform: isCollapsed ? 'translateX(-8px)' : (justExpanded ? 'translateX(-8px)' : 'translateX(0)'),
+                  transition: isCollapsed ? 'opacity 0.15s ease-in, transform 0.15s ease-in' : 'none',
+                  animation: !isCollapsed && justExpanded ? 'fadeInSlide 0.3s ease-out forwards' : 'none',
+                  visibility: isCollapsed ? 'hidden' : 'visible',
+                  overflow: 'hidden',
+                  whiteSpace: 'nowrap',
+                  maxWidth: isCollapsed ? 0 : 'none',
+                }}
+                className="menu-label"
+              >
+                {item.label}
+              </Typography>
+              <Box
+                sx={{
+                  width: 16,
+                  height: 16,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: '#ffffff',
+                  flexShrink: 0,
+                  transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
+                  transition: 'transform 0.2s ease-in-out',
+                }}
+              >
+                <ExpandMore sx={{ fontSize: 16 }} />
+              </Box>
             </ListItemButton>
 
             <Collapse in={isExpanded} timeout="auto" unmountOnExit>
-              <List disablePadding>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%' }}>
                 {item.children?.map((child) => renderNavItem(child, level + 1))}
-              </List>
+              </Box>
             </Collapse>
           </Box>
         </ListItem>
@@ -459,8 +489,8 @@ export function SideNav({
     if (hasChildren && level === 1) {
       // Second-level expandable item (sub-section)
       return (
-        <ListItem key={item.id} disablePadding>
-          <Box sx={{ width: '100%' }}>
+        <ListItem key={item.id} disablePadding sx={{ width: '100%' }}>
+          <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '8px' }}>
             <ListItemButton
               onClick={() => toggleExpand(item.id)}
               sx={{
@@ -468,10 +498,11 @@ export function SideNav({
                 pl: 2,
                 pr: 1,
                 py: 0.75,
-                borderRadius: 1,
+                borderRadius: '8px',
                 cursor: 'pointer',
+                gap: 1,
                 '&:hover': {
-                  backgroundColor: 'action.hover',
+                  backgroundColor: '#2A2A2C',
                 },
                 '&:focus-visible': {
                   outline: `2px solid ${tokens.palette.border.focus.dark}`,
@@ -480,53 +511,67 @@ export function SideNav({
               }}
             >
               {item.icon && typeof item.icon === 'string' && iconMap[item.icon] && (
-                <Box sx={{ display: 'flex', alignItems: 'center', mr: 1, color: 'text.primary' }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', color: '#ffffff', flexShrink: 0 }}>
                   {iconMap[item.icon]}
                 </Box>
               )}
               {item.icon && typeof item.icon !== 'string' && (
-                <Box sx={{ display: 'flex', alignItems: 'center', mr: 1, color: 'text.primary' }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', color: '#ffffff', flexShrink: 0 }}>
                   {item.icon}
                 </Box>
               )}
-              <Stack direction="row" spacing={1} sx={{ flexGrow: 1, alignItems: 'center' }}>
-                <Typography
-                  variant="body2"
-                  sx={{
-                    fontWeight: 400,
-                    fontSize: 14,
-                    lineHeight: 1.43,
-                    color: 'text.primary',
-                    flexGrow: 1,
-                  }}
-                  className="menu-label"
-                >
-                  {item.label}
-                </Typography>
-                <Box />
-              </Stack>
-              <Stack direction="row" spacing={0.5}>
-                <Box
-                  sx={{
-                    width: 18,
-                    height: 18,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: 'text.primary',
-                    transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
-                    transition: 'transform 0.2s ease-in-out',
-                  }}
-                >
-                  <ExpandMore sx={{ fontSize: 18 }} />
-                </Box>
-              </Stack>
+              <Typography
+                sx={{
+                  fontWeight: 700,
+                  fontSize: 14,
+                  lineHeight: 1.43,
+                  letterSpacing: '0.17px',
+                  color: '#ffffff',
+                  flexGrow: 1,
+                  opacity: isCollapsed ? 0 : (justExpanded ? 0 : 1),
+                  transform: isCollapsed ? 'translateX(-8px)' : (justExpanded ? 'translateX(-8px)' : 'translateX(0)'),
+                  transition: isCollapsed ? 'opacity 0.15s ease-in, transform 0.15s ease-in' : 'none',
+                  animation: !isCollapsed && justExpanded ? 'fadeInSlide 0.3s ease-out forwards' : 'none',
+                  visibility: isCollapsed ? 'hidden' : 'visible',
+                  overflow: 'hidden',
+                  whiteSpace: 'nowrap',
+                  maxWidth: isCollapsed ? 0 : 'none',
+                }}
+                className="menu-label"
+              >
+                {item.label}
+              </Typography>
+              <Box
+                sx={{
+                  width: 16,
+                  height: 16,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: '#ffffff',
+                  flexShrink: 0,
+                  transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
+                  transition: 'transform 0.2s ease-in-out',
+                }}
+              >
+                <ExpandMore sx={{ fontSize: 16 }} />
+              </Box>
             </ListItemButton>
 
             <Collapse in={isExpanded} timeout="auto" unmountOnExit>
-              <List disablePadding>
+              <Box
+                sx={{
+                  pl: 2,
+                  borderLeft: '1px solid #554b55',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '4px',
+                  py: 0.25,
+                  px: 1.25,
+                }}
+              >
                 {item.children?.map((child) => renderNavItem(child, level + 2))}
-              </List>
+              </Box>
             </Collapse>
           </Box>
         </ListItem>
@@ -534,13 +579,17 @@ export function SideNav({
     }
 
     // Leaf item (no children)
+    const isTopLevel = level === 0
+    const itemHeight = isTopLevel ? 48 : 32
+    const itemBorderRadius = isTopLevel ? '8px' : '4px'
+    const itemFontWeight = isTopLevel ? 700 : 400
+    
     return (
       <ListItem
         key={item.id}
         disablePadding
         sx={{
-          mb: 0.5,
-          pl: level === 2 ? 2.5 : level === 0 ? 0 : 2,
+          width: '100%',
         }}
       >
         {item.path ? (
@@ -551,19 +600,20 @@ export function SideNav({
             rel={item.external ? 'noreferrer' : undefined}
             selected={isActive}
             sx={{
-              minHeight: 32,
-              height: 32,
+              minHeight: itemHeight,
+              height: itemHeight,
               px: 1,
               py: 0.75,
-              borderRadius: 0.75,
-              backgroundColor: isActive ? 'action.disabled' : 'transparent',
+              borderRadius: itemBorderRadius,
+              backgroundColor: isActive ? '#17161D' : 'transparent',
+              gap: 1,
               '&:hover': {
-                backgroundColor: 'action.hover',
+                backgroundColor: '#2A2A2C',
               },
               '&.Mui-selected': {
-                backgroundColor: 'action.disabled',
+                backgroundColor: '#17161D',
                 '&:hover': {
-                  backgroundColor: 'action.hover',
+                  backgroundColor: '#2A2A2C',
                 },
               },
               '&:focus-visible': {
@@ -572,39 +622,55 @@ export function SideNav({
               },
             }}
           >
-            <Stack direction="row" spacing={1} sx={{ flexGrow: 1, alignItems: 'center' }} className="menu-label">
-              <Typography
-                variant="body2"
-                sx={{
-                  fontWeight: 400,
-                  fontSize: 14,
-                  lineHeight: 1.43,
-                  color: 'text.primary',
-                  flexGrow: 1,
-                }}
-              >
-                {item.label}
-              </Typography>
-              <Box />
-            </Stack>
+            {isTopLevel && item.icon && typeof item.icon === 'string' && iconMap[item.icon] && (
+              <Box sx={{ display: 'flex', alignItems: 'center', color: '#ffffff', flexShrink: 0 }}>
+                {iconMap[item.icon]}
+              </Box>
+            )}
+            {isTopLevel && item.icon && typeof item.icon !== 'string' && (
+              <Box sx={{ display: 'flex', alignItems: 'center', color: '#ffffff', flexShrink: 0 }}>
+                {item.icon}
+              </Box>
+            )}
+            <Typography
+              sx={{
+                fontWeight: itemFontWeight,
+                fontSize: 14,
+                lineHeight: 1.43,
+                letterSpacing: '0.17px',
+                color: '#ffffff',
+                flexGrow: 1,
+                opacity: isCollapsed ? 0 : 1,
+                transform: isCollapsed ? 'translateX(-8px)' : 'translateX(0)',
+                transition: isCollapsed ? 'none' : 'opacity 0.3s ease-out, transform 0.3s ease-out',
+                animation: !isCollapsed && justExpanded ? 'fadeInSlide 0.3s ease-out forwards' : 'none',
+                visibility: isCollapsed ? 'hidden' : 'visible',
+                overflow: 'hidden',
+                whiteSpace: 'nowrap',
+              }}
+              className="menu-label"
+            >
+              {item.label}
+            </Typography>
           </ListItemButton>
         ) : (
           <ListItemButton
             selected={isActive}
             sx={{
-              minHeight: 32,
-              height: 32,
+              minHeight: itemHeight,
+              height: itemHeight,
               px: 1,
               py: 0.75,
-              borderRadius: 0.75,
-              backgroundColor: isActive ? 'action.disabled' : 'transparent',
+              borderRadius: itemBorderRadius,
+              backgroundColor: isActive ? '#17161D' : 'transparent',
+              gap: 1,
               '&:hover': {
-                backgroundColor: 'action.hover',
+                backgroundColor: '#2A2A2C',
               },
               '&.Mui-selected': {
-                backgroundColor: 'action.disabled',
+                backgroundColor: '#17161D',
                 '&:hover': {
-                  backgroundColor: 'action.hover',
+                  backgroundColor: '#2A2A2C',
                 },
               },
               '&:focus-visible': {
@@ -613,21 +679,36 @@ export function SideNav({
               },
             }}
           >
-            <Stack direction="row" spacing={1} sx={{ flexGrow: 1, alignItems: 'center' }} className="menu-label">
-              <Typography
-                variant="body2"
-                sx={{
-                  fontWeight: 400,
-                  fontSize: 14,
-                  lineHeight: 1.43,
-                  color: 'text.primary',
-                  flexGrow: 1,
-                }}
-              >
-                {item.label}
-              </Typography>
-              <Box />
-            </Stack>
+            {isTopLevel && item.icon && typeof item.icon === 'string' && iconMap[item.icon] && (
+              <Box sx={{ display: 'flex', alignItems: 'center', color: '#ffffff', flexShrink: 0 }}>
+                {iconMap[item.icon]}
+              </Box>
+            )}
+            {isTopLevel && item.icon && typeof item.icon !== 'string' && (
+              <Box sx={{ display: 'flex', alignItems: 'center', color: '#ffffff', flexShrink: 0 }}>
+                {item.icon}
+              </Box>
+            )}
+            <Typography
+              sx={{
+                fontWeight: itemFontWeight,
+                fontSize: 14,
+                lineHeight: 1.43,
+                letterSpacing: '0.17px',
+                color: '#ffffff',
+                flexGrow: 1,
+                opacity: isCollapsed ? 0 : 1,
+                transform: isCollapsed ? 'translateX(-8px)' : 'translateX(0)',
+                transition: isCollapsed ? 'none' : 'opacity 0.3s ease-out, transform 0.3s ease-out',
+                animation: !isCollapsed && justExpanded ? 'fadeInSlide 0.3s ease-out forwards' : 'none',
+                visibility: isCollapsed ? 'hidden' : 'visible',
+                overflow: 'hidden',
+                whiteSpace: 'nowrap',
+              }}
+              className="menu-label"
+            >
+              {item.label}
+            </Typography>
           </ListItemButton>
         )}
       </ListItem>
@@ -641,50 +722,153 @@ export function SideNav({
       sx={{
         width: isCollapsed ? 64 : 300,
         flexShrink: 0,
+        '@keyframes fadeInSlide': {
+          '0%': {
+            opacity: 0,
+            transform: 'translateX(-8px)',
+          },
+          '100%': {
+            opacity: 1,
+            transform: 'translateX(0)',
+          },
+        },
         '& .MuiDrawer-paper': {
           width: isCollapsed ? 64 : 300,
           boxSizing: 'border-box',
           borderRight: `1px solid ${tokens.palette.border.default.dark}`,
-          backgroundColor: 'background.surface',
+          backgroundColor: '#1e1c26',
           transition: 'width 0.2s ease-in-out',
           '--Paper-shadow': 'none',
         },
       }}
     >
       <Box
+        onClick={() => {
+          if (isCollapsed) {
+            handleToggleCollapse()
+          }
+        }}
         sx={{
           display: 'flex',
           flexDirection: 'column',
           height: '100%',
           overflow: 'hidden',
+          gap: isCollapsed ? '10px' : '10px',
+          px: isCollapsed ? '10px' : 1,
+          py: isCollapsed ? '8px' : 1,
+          cursor: isCollapsed ? 'pointer' : 'default',
         }}
-        className="expanded"
+        className={isCollapsed ? 'collapsed' : 'expanded'}
       >
         {/* Header */}
-        <Stack direction="row" spacing={1} sx={{ p: 1, alignItems: 'center' }}>
-          <Box
-            onClick={(e) => {
-              if (isCollapsed) {
-                handleToggleCollapse()
-              } else {
+        <Box
+          sx={{
+            display: 'flex',
+            gap: 1,
+            alignItems: isCollapsed ? 'center' : 'flex-start',
+            justifyContent: isCollapsed ? 'center' : 'flex-start',
+            width: '100%',
+          }}
+        >
+          {/* AdminButtonDropDown - 244px width when expanded, icon-only when collapsed */}
+          {isCollapsed ? (
+            <Box
+              onClick={(e) => {
+                // Don't stop propagation - let parent handle reopening sidebar
+                // Menu will open on click, but sidebar will also reopen
                 handleCompanyMenuOpen(e)
-              }
-            }}
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 1,
-              flex: 1,
-              p: 1.25,
-              position: 'relative',
-              cursor: 'pointer',
-              '&:hover': {
-                backgroundColor: 'action.hover',
-                borderRadius: 1,
-              },
-            }}
-            aria-describedby={companyMenuAnchor ? '_r_2_' : undefined}
-          >
+              }}
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: '100%',
+                height: '48px',
+                border: '1px solid #2b2733',
+                borderRadius: '8px',
+                p: '4px',
+                cursor: 'pointer',
+                flexShrink: 0,
+              }}
+              aria-describedby={companyMenuAnchor ? '_r_2_' : undefined}
+            >
+              {logoUrl ? (
+                <Box
+                  sx={{
+                    width: 24,
+                    height: 24,
+                    borderRadius: '4px',
+                    overflow: 'hidden',
+                    flexShrink: 0,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <img
+                    alt="Company logo"
+                    width="24"
+                    height="24"
+                    src={logoUrl}
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  />
+                </Box>
+              ) : (
+                <Box
+                  sx={{
+                    width: 24,
+                    height: 24,
+                    borderRadius: '4px',
+                    flexShrink: 0,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <svg width="24" height="24" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <g>
+                      <path fillRule="evenodd" clipRule="evenodd" d="M4.95008 2.6974C4.37949 3.19461 3.96726 3.95616 3.96726 5.06038C3.96726 7.01869 5.28043 8.24444 7.12869 9.55913C9.06844 8.23669 10.4434 7.06544 10.4434 5.06039C10.4434 3.95618 10.0312 3.19461 9.46062 2.69741C8.87112 2.18371 8.05512 1.90476 7.20537 1.90476C6.35561 1.90476 5.53959 2.18371 4.95008 2.6974ZM8.80181 10.7191C10.5614 9.4665 12.3482 7.81338 12.3482 5.06039C12.3482 3.42594 11.7128 2.13349 10.712 1.26136C9.73006 0.405721 8.45087 9.08264e-07 7.20537 0C5.95987 -9.99086e-07 4.68065 0.405717 3.69872 1.26136C2.69789 2.13348 2.0625 3.42593 2.0625 5.06038C2.0625 7.72781 3.73941 9.414 5.45052 10.6967C4.80421 11.154 4.16807 11.6514 3.63435 12.2126C2.72828 13.1651 2.0625 14.3543 2.0625 15.9189C2.0625 17.4781 2.72358 18.6926 3.61809 19.6816C4.18122 20.3041 4.85866 20.8599 5.54458 21.3725C4.8566 21.8994 4.17938 22.467 3.61647 23.0926C2.73296 24.0743 2.0625 25.2721 2.0625 26.7773C2.0625 28.4913 2.68217 29.8338 3.68917 30.7353C4.67881 31.6212 5.96909 32.0163 7.21819 31.9995C9.6915 31.9661 12.3482 30.2581 12.3482 27.0036C12.3482 25.4123 11.696 24.1684 10.8002 23.154C10.2087 22.4842 9.49231 21.8943 8.771 21.3553C9.49044 20.8102 10.2036 20.2231 10.7917 19.5749C11.6744 18.6019 12.3482 17.4137 12.3482 15.9189C12.3482 14.4151 11.6664 13.2639 10.7704 12.3388C10.1959 11.7456 9.50062 11.2134 8.80181 10.7191ZM7.11231 11.8651C6.29351 12.4189 5.57384 12.9372 5.01446 13.5253C4.34911 14.2248 3.96726 14.9666 3.96726 15.9189C3.96726 16.8764 4.3538 17.6554 5.03071 18.4038C5.59718 19.0301 6.32725 19.5931 7.15025 20.1873C8.01462 19.5506 8.78712 18.9497 9.38094 18.2951C10.0696 17.5359 10.4434 16.7839 10.4434 15.9189C10.4434 15.0627 10.0776 14.3614 9.40219 13.6639C8.79706 13.0391 8.00856 12.4814 7.11231 11.8651ZM7.16344 22.5389C6.3395 23.1493 5.60307 23.7324 5.03234 24.3667C4.34442 25.1311 3.96726 25.8946 3.96726 26.7773C3.96726 28.0041 4.39521 28.8108 4.95964 29.3161C5.54142 29.8369 6.34639 30.1063 7.1925 30.0949C8.90969 30.0717 10.4434 28.9519 10.4434 27.0036C10.4434 25.9933 10.0481 25.1799 9.37237 24.4147C8.78581 23.7504 8.02206 23.1591 7.16344 22.5389Z" fill="url(#paint0_linear_1107_9511)" />
+                      <path fillRule="evenodd" clipRule="evenodd" d="M16.1828 7.43663C14.6674 7.47175 13.3036 8.47 13.3036 10.2663C13.3036 11.2053 13.6623 11.9957 14.2839 12.7691C14.8088 13.4219 15.4854 14.0214 16.2468 14.6613C17.8726 13.3056 19.0179 12.1018 19.0179 10.2663C19.0179 9.21225 18.6429 8.52581 18.1527 8.09706C17.6439 7.652 16.9342 7.41913 16.1828 7.43663ZM17.7283 15.9087C19.3192 14.5611 20.9226 12.8654 20.9226 10.2663C20.9226 8.71069 20.3452 7.48413 19.4068 6.66331C18.487 5.85883 17.292 5.50558 16.1386 5.53234C13.8446 5.58559 11.3988 7.19694 11.3988 10.2663C11.3988 11.7599 11.9924 12.9585 12.7994 13.9624C13.3637 14.6644 14.0562 15.2987 14.7462 15.8873C13.1084 17.2526 11.3988 18.9666 11.3988 21.6378C11.3988 23.1868 11.9759 24.422 12.9013 25.2626C13.8107 26.0886 14.9997 26.4833 16.1607 26.4833C17.3217 26.4833 18.5107 26.0886 19.4201 25.2626C20.3455 24.422 20.9226 23.1868 20.9226 21.6378C20.9226 19.0531 19.3227 17.3035 17.7283 15.9087ZM16.2302 17.1348C14.5203 18.5447 13.3036 19.758 13.3036 21.6378C13.3036 22.6842 13.6788 23.3956 14.1821 23.8527C14.7012 24.3243 15.4169 24.5786 16.1607 24.5786C16.9045 24.5786 17.6202 24.3243 18.1394 23.8527C18.6426 23.3956 19.0179 22.6842 19.0179 21.6378C19.0179 19.8032 17.8574 18.5352 16.2302 17.1348Z" fill="url(#paint1_linear_1107_9511)" />
+                      <path fillRule="evenodd" clipRule="evenodd" d="M24.9881 12.7689C23.3049 12.7689 21.9405 14.1334 21.9405 15.8165C21.9405 17.4997 23.3049 18.8641 24.9881 18.8641C26.6712 18.8641 28.0357 17.4997 28.0357 15.8165C28.0357 14.1334 26.6712 12.7689 24.9881 12.7689ZM20.0357 15.8165C20.0357 13.0814 22.253 10.8641 24.9881 10.8641C27.7232 10.8641 29.9405 13.0814 29.9405 15.8165C29.9405 18.5516 27.7232 20.7689 24.9881 20.7689C22.253 20.7689 20.0357 18.5516 20.0357 15.8165Z" fill="url(#paint2_linear_1107_9511)" />
+                    </g>
+                    <defs>
+                      <linearGradient id="paint0_linear_1107_9511" x1="16.0016" y1="0" x2="16.0016" y2="32" gradientUnits="userSpaceOnUse">
+                        <stop stopColor="#42E697" />
+                        <stop offset="1" stopColor="#42E697" stopOpacity="0.2" />
+                      </linearGradient>
+                      <linearGradient id="paint1_linear_1107_9511" x1="16.0014" y1="0.00000742095" x2="16.0014" y2="32" gradientUnits="userSpaceOnUse">
+                        <stop stopColor="#42E697" />
+                        <stop offset="1" stopColor="#42E697" stopOpacity="0.2" />
+                      </linearGradient>
+                      <linearGradient id="paint2_linear_1107_9511" x1="24.9882" y1="10.8641" x2="24.9882" y2="20.7689" gradientUnits="userSpaceOnUse">
+                        <stop stopColor="#42E697" />
+                        <stop offset="1" stopColor="#42E697" stopOpacity="0.2" />
+                      </linearGradient>
+                    </defs>
+                  </svg>
+                </Box>
+              )}
+            </Box>
+          ) : (
+            <Box
+              onClick={(e) => {
+                e.stopPropagation()
+                handleCompanyMenuOpen(e)
+              }}
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                width: '244px',
+                height: '48px',
+                border: '1px solid #2b2733',
+                borderRadius: '8px',
+                p: 1,
+                cursor: 'pointer',
+                flexShrink: 0,
+              }}
+              aria-describedby={companyMenuAnchor ? '_r_2_' : undefined}
+            >
             <Box
               sx={{
                 display: 'flex',
@@ -695,74 +879,178 @@ export function SideNav({
               }}
             >
               {logoUrl ? (
-                <img
-                  alt="Company logo"
-                  width="32"
-                  height="32"
-                  src={logoUrl}
-                  style={{ borderRadius: '4px' }}
-                />
-              ) : (
-                <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <g>
-                  <path fillRule="evenodd" clipRule="evenodd" d="M4.95008 2.6974C4.37949 3.19461 3.96726 3.95616 3.96726 5.06038C3.96726 7.01869 5.28043 8.24444 7.12869 9.55913C9.06844 8.23669 10.4434 7.06544 10.4434 5.06039C10.4434 3.95618 10.0312 3.19461 9.46062 2.69741C8.87112 2.18371 8.05512 1.90476 7.20537 1.90476C6.35561 1.90476 5.53959 2.18371 4.95008 2.6974ZM8.80181 10.7191C10.5614 9.4665 12.3482 7.81338 12.3482 5.06039C12.3482 3.42594 11.7128 2.13349 10.712 1.26136C9.73006 0.405721 8.45087 9.08264e-07 7.20537 0C5.95987 -9.99086e-07 4.68065 0.405717 3.69872 1.26136C2.69789 2.13348 2.0625 3.42593 2.0625 5.06038C2.0625 7.72781 3.73941 9.414 5.45052 10.6967C4.80421 11.154 4.16807 11.6514 3.63435 12.2126C2.72828 13.1651 2.0625 14.3543 2.0625 15.9189C2.0625 17.4781 2.72358 18.6926 3.61809 19.6816C4.18122 20.3041 4.85866 20.8599 5.54458 21.3725C4.8566 21.8994 4.17938 22.467 3.61647 23.0926C2.73296 24.0743 2.0625 25.2721 2.0625 26.7773C2.0625 28.4913 2.68217 29.8338 3.68917 30.7353C4.67881 31.6212 5.96909 32.0163 7.21819 31.9995C9.6915 31.9661 12.3482 30.2581 12.3482 27.0036C12.3482 25.4123 11.696 24.1684 10.8002 23.154C10.2087 22.4842 9.49231 21.8943 8.771 21.3553C9.49044 20.8102 10.2036 20.2231 10.7917 19.5749C11.6744 18.6019 12.3482 17.4137 12.3482 15.9189C12.3482 14.4151 11.6664 13.2639 10.7704 12.3388C10.1959 11.7456 9.50062 11.2134 8.80181 10.7191ZM7.11231 11.8651C6.29351 12.4189 5.57384 12.9372 5.01446 13.5253C4.34911 14.2248 3.96726 14.9666 3.96726 15.9189C3.96726 16.8764 4.3538 17.6554 5.03071 18.4038C5.59718 19.0301 6.32725 19.5931 7.15025 20.1873C8.01462 19.5506 8.78712 18.9497 9.38094 18.2951C10.0696 17.5359 10.4434 16.7839 10.4434 15.9189C10.4434 15.0627 10.0776 14.3614 9.40219 13.6639C8.79706 13.0391 8.00856 12.4814 7.11231 11.8651ZM7.16344 22.5389C6.3395 23.1493 5.60307 23.7324 5.03234 24.3667C4.34442 25.1311 3.96726 25.8946 3.96726 26.7773C3.96726 28.0041 4.39521 28.8108 4.95964 29.3161C5.54142 29.8369 6.34639 30.1063 7.1925 30.0949C8.90969 30.0717 10.4434 28.9519 10.4434 27.0036C10.4434 25.9933 10.0481 25.1799 9.37237 24.4147C8.78581 23.7504 8.02206 23.1591 7.16344 22.5389Z" fill="url(#paint0_linear_1107_9511)" />
-                  <path fillRule="evenodd" clipRule="evenodd" d="M16.1828 7.43663C14.6674 7.47175 13.3036 8.47 13.3036 10.2663C13.3036 11.2053 13.6623 11.9957 14.2839 12.7691C14.8088 13.4219 15.4854 14.0214 16.2468 14.6613C17.8726 13.3056 19.0179 12.1018 19.0179 10.2663C19.0179 9.21225 18.6429 8.52581 18.1527 8.09706C17.6439 7.652 16.9342 7.41913 16.1828 7.43663ZM17.7283 15.9087C19.3192 14.5611 20.9226 12.8654 20.9226 10.2663C20.9226 8.71069 20.3452 7.48413 19.4068 6.66331C18.487 5.85883 17.292 5.50558 16.1386 5.53234C13.8446 5.58559 11.3988 7.19694 11.3988 10.2663C11.3988 11.7599 11.9924 12.9585 12.7994 13.9624C13.3637 14.6644 14.0562 15.2987 14.7462 15.8873C13.1084 17.2526 11.3988 18.9666 11.3988 21.6378C11.3988 23.1868 11.9759 24.422 12.9013 25.2626C13.8107 26.0886 14.9997 26.4833 16.1607 26.4833C17.3217 26.4833 18.5107 26.0886 19.4201 25.2626C20.3455 24.422 20.9226 23.1868 20.9226 21.6378C20.9226 19.0531 19.3227 17.3035 17.7283 15.9087ZM16.2302 17.1348C14.5203 18.5447 13.3036 19.758 13.3036 21.6378C13.3036 22.6842 13.6788 23.3956 14.1821 23.8527C14.7012 24.3243 15.4169 24.5786 16.1607 24.5786C16.9045 24.5786 17.6202 24.3243 18.1394 23.8527C18.6426 23.3956 19.0179 22.6842 19.0179 21.6378C19.0179 19.8032 17.8574 18.5352 16.2302 17.1348Z" fill="url(#paint1_linear_1107_9511)" />
-                  <path fillRule="evenodd" clipRule="evenodd" d="M24.9881 12.7689C23.3049 12.7689 21.9405 14.1334 21.9405 15.8165C21.9405 17.4997 23.3049 18.8641 24.9881 18.8641C26.6712 18.8641 28.0357 17.4997 28.0357 15.8165C28.0357 14.1334 26.6712 12.7689 24.9881 12.7689ZM20.0357 15.8165C20.0357 13.0814 22.253 10.8641 24.9881 10.8641C27.7232 10.8641 29.9405 13.0814 29.9405 15.8165C29.9405 18.5516 27.7232 20.7689 24.9881 20.7689C22.253 20.7689 20.0357 18.5516 20.0357 15.8165Z" fill="url(#paint2_linear_1107_9511)" />
-                </g>
-                <defs>
-                  <linearGradient id="paint0_linear_1107_9511" x1="16.0016" y1="0" x2="16.0016" y2="32" gradientUnits="userSpaceOnUse">
-                    <stop stopColor="#42E697" />
-                    <stop offset="1" stopColor="#42E697" stopOpacity="0.2" />
-                  </linearGradient>
-                  <linearGradient id="paint1_linear_1107_9511" x1="16.0014" y1="0.00000742095" x2="16.0014" y2="32" gradientUnits="userSpaceOnUse">
-                    <stop stopColor="#42E697" />
-                    <stop offset="1" stopColor="#42E697" stopOpacity="0.2" />
-                  </linearGradient>
-                  <linearGradient id="paint2_linear_1107_9511" x1="24.9882" y1="10.8641" x2="24.9882" y2="20.7689" gradientUnits="userSpaceOnUse">
-                    <stop stopColor="#42E697" />
-                    <stop offset="1" stopColor="#42E697" stopOpacity="0.2" />
-                  </linearGradient>
-                </defs>
-              </svg>
-              )}
-              {!isCollapsed && (
-                <Typography
-                  variant="body1"
+                <Box
                   sx={{
-                    fontWeight: 400,
+                    width: 24,
+                    height: 24,
+                    borderRadius: '4px',
+                    overflow: 'hidden',
+                    flexShrink: 0,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <img
+                    alt="Company logo"
+                    width="24"
+                    height="24"
+                    src={logoUrl}
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  />
+                </Box>
+              ) : (
+                <Box
+                  sx={{
+                    width: 24,
+                    height: 24,
+                    borderRadius: '4px',
+                    flexShrink: 0,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <svg width="24" height="24" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <g>
+                      <path fillRule="evenodd" clipRule="evenodd" d="M4.95008 2.6974C4.37949 3.19461 3.96726 3.95616 3.96726 5.06038C3.96726 7.01869 5.28043 8.24444 7.12869 9.55913C9.06844 8.23669 10.4434 7.06544 10.4434 5.06039C10.4434 3.95618 10.0312 3.19461 9.46062 2.69741C8.87112 2.18371 8.05512 1.90476 7.20537 1.90476C6.35561 1.90476 5.53959 2.18371 4.95008 2.6974ZM8.80181 10.7191C10.5614 9.4665 12.3482 7.81338 12.3482 5.06039C12.3482 3.42594 11.7128 2.13349 10.712 1.26136C9.73006 0.405721 8.45087 9.08264e-07 7.20537 0C5.95987 -9.99086e-07 4.68065 0.405717 3.69872 1.26136C2.69789 2.13348 2.0625 3.42593 2.0625 5.06038C2.0625 7.72781 3.73941 9.414 5.45052 10.6967C4.80421 11.154 4.16807 11.6514 3.63435 12.2126C2.72828 13.1651 2.0625 14.3543 2.0625 15.9189C2.0625 17.4781 2.72358 18.6926 3.61809 19.6816C4.18122 20.3041 4.85866 20.8599 5.54458 21.3725C4.8566 21.8994 4.17938 22.467 3.61647 23.0926C2.73296 24.0743 2.0625 25.2721 2.0625 26.7773C2.0625 28.4913 2.68217 29.8338 3.68917 30.7353C4.67881 31.6212 5.96909 32.0163 7.21819 31.9995C9.6915 31.9661 12.3482 30.2581 12.3482 27.0036C12.3482 25.4123 11.696 24.1684 10.8002 23.154C10.2087 22.4842 9.49231 21.8943 8.771 21.3553C9.49044 20.8102 10.2036 20.2231 10.7917 19.5749C11.6744 18.6019 12.3482 17.4137 12.3482 15.9189C12.3482 14.4151 11.6664 13.2639 10.7704 12.3388C10.1959 11.7456 9.50062 11.2134 8.80181 10.7191ZM7.11231 11.8651C6.29351 12.4189 5.57384 12.9372 5.01446 13.5253C4.34911 14.2248 3.96726 14.9666 3.96726 15.9189C3.96726 16.8764 4.3538 17.6554 5.03071 18.4038C5.59718 19.0301 6.32725 19.5931 7.15025 20.1873C8.01462 19.5506 8.78712 18.9497 9.38094 18.2951C10.0696 17.5359 10.4434 16.7839 10.4434 15.9189C10.4434 15.0627 10.0776 14.3614 9.40219 13.6639C8.79706 13.0391 8.00856 12.4814 7.11231 11.8651ZM7.16344 22.5389C6.3395 23.1493 5.60307 23.7324 5.03234 24.3667C4.34442 25.1311 3.96726 25.8946 3.96726 26.7773C3.96726 28.0041 4.39521 28.8108 4.95964 29.3161C5.54142 29.8369 6.34639 30.1063 7.1925 30.0949C8.90969 30.0717 10.4434 28.9519 10.4434 27.0036C10.4434 25.9933 10.0481 25.1799 9.37237 24.4147C8.78581 23.7504 8.02206 23.1591 7.16344 22.5389Z" fill="url(#paint0_linear_1107_9511)" />
+                      <path fillRule="evenodd" clipRule="evenodd" d="M16.1828 7.43663C14.6674 7.47175 13.3036 8.47 13.3036 10.2663C13.3036 11.2053 13.6623 11.9957 14.2839 12.7691C14.8088 13.4219 15.4854 14.0214 16.2468 14.6613C17.8726 13.3056 19.0179 12.1018 19.0179 10.2663C19.0179 9.21225 18.6429 8.52581 18.1527 8.09706C17.6439 7.652 16.9342 7.41913 16.1828 7.43663ZM17.7283 15.9087C19.3192 14.5611 20.9226 12.8654 20.9226 10.2663C20.9226 8.71069 20.3452 7.48413 19.4068 6.66331C18.487 5.85883 17.292 5.50558 16.1386 5.53234C13.8446 5.58559 11.3988 7.19694 11.3988 10.2663C11.3988 11.7599 11.9924 12.9585 12.7994 13.9624C13.3637 14.6644 14.0562 15.2987 14.7462 15.8873C13.1084 17.2526 11.3988 18.9666 11.3988 21.6378C11.3988 23.1868 11.9759 24.422 12.9013 25.2626C13.8107 26.0886 14.9997 26.4833 16.1607 26.4833C17.3217 26.4833 18.5107 26.0886 19.4201 25.2626C20.3455 24.422 20.9226 23.1868 20.9226 21.6378C20.9226 19.0531 19.3227 17.3035 17.7283 15.9087ZM16.2302 17.1348C14.5203 18.5447 13.3036 19.758 13.3036 21.6378C13.3036 22.6842 13.6788 23.3956 14.1821 23.8527C14.7012 24.3243 15.4169 24.5786 16.1607 24.5786C16.9045 24.5786 17.6202 24.3243 18.1394 23.8527C18.6426 23.3956 19.0179 22.6842 19.0179 21.6378C19.0179 19.8032 17.8574 18.5352 16.2302 17.1348Z" fill="url(#paint1_linear_1107_9511)" />
+                      <path fillRule="evenodd" clipRule="evenodd" d="M24.9881 12.7689C23.3049 12.7689 21.9405 14.1334 21.9405 15.8165C21.9405 17.4997 23.3049 18.8641 24.9881 18.8641C26.6712 18.8641 28.0357 17.4997 28.0357 15.8165C28.0357 14.1334 26.6712 12.7689 24.9881 12.7689ZM20.0357 15.8165C20.0357 13.0814 22.253 10.8641 24.9881 10.8641C27.7232 10.8641 29.9405 13.0814 29.9405 15.8165C29.9405 18.5516 27.7232 20.7689 24.9881 20.7689C22.253 20.7689 20.0357 18.5516 20.0357 15.8165Z" fill="url(#paint2_linear_1107_9511)" />
+                    </g>
+                    <defs>
+                      <linearGradient id="paint0_linear_1107_9511" x1="16.0016" y1="0" x2="16.0016" y2="32" gradientUnits="userSpaceOnUse">
+                        <stop stopColor="#42E697" />
+                        <stop offset="1" stopColor="#42E697" stopOpacity="0.2" />
+                      </linearGradient>
+                      <linearGradient id="paint1_linear_1107_9511" x1="16.0014" y1="0.00000742095" x2="16.0014" y2="32" gradientUnits="userSpaceOnUse">
+                        <stop stopColor="#42E697" />
+                        <stop offset="1" stopColor="#42E697" stopOpacity="0.2" />
+                      </linearGradient>
+                      <linearGradient id="paint2_linear_1107_9511" x1="24.9882" y1="10.8641" x2="24.9882" y2="20.7689" gradientUnits="userSpaceOnUse">
+                        <stop stopColor="#42E697" />
+                        <stop offset="1" stopColor="#42E697" stopOpacity="0.2" />
+                      </linearGradient>
+                    </defs>
+                  </svg>
+                </Box>
+              )}
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 0.5,
+                  minWidth: 0,
+                  flex: 1,
+                }}
+              >
+                <Typography
+                  sx={{
+                    fontWeight: 700,
                     fontSize: 14,
                     lineHeight: 1.43,
-                    color: 'text.primary',
+                    letterSpacing: '0.17px',
+                    color: '#ffffff',
                     whiteSpace: 'nowrap',
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
+                    maxWidth: isCollapsed ? 0 : '155px',
+                    opacity: isCollapsed ? 0 : (justExpanded ? 0 : 1),
+                    transform: isCollapsed ? 'translateX(-8px)' : (justExpanded ? 'translateX(-8px)' : 'translateX(0)'),
+                    transition: isCollapsed ? 'opacity 0.15s ease-in, transform 0.15s ease-in' : 'none',
+                    animation: !isCollapsed && justExpanded ? 'fadeInSlide 0.3s ease-out 0.1s forwards' : 'none',
+                    visibility: isCollapsed ? 'hidden' : 'visible',
                   }}
                   title={clientName}
-                  className="MuiTypography-noWrap"
                 >
-                  {clientName}
+                  {clientName.length > 20 ? `${clientName.substring(0, 20)}...` : clientName}
                 </Typography>
-              )}
+              </Box>
             </Box>
-            {!isCollapsed && (
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: 32,
+                height: 32,
+                borderRadius: '2px',
+                flexShrink: 0,
+              }}
+            >
               <IconButton
                 size="small"
                 onClick={handleCompanyMenuOpen}
                 sx={{
                   width: 24,
                   height: 24,
-                  color: 'text.primary',
-                  '&:hover': {
-                    backgroundColor: 'action.hover',
-                  },
+                  color: '#ffffff',
+                  padding: 0,
                 }}
                 aria-label="Toggle dropdown"
                 aria-describedby={companyMenuAnchor ? '_r_2_' : undefined}
               >
                 <UnfoldMore sx={{ fontSize: 24 }} />
               </IconButton>
-            )}
-            <Menu
+            </Box>
+          </Box>
+          )}
+          
+          {/* NavOpenCloseSidebarIcon - 32px x 32px */}
+          {!isCollapsed && (
+            <IconButton
+              size="small"
+              onClick={handleToggleCollapse}
+              sx={{
+                width: 32,
+                height: 32,
+                color: '#ffffff',
+                paddingLeft: 0,
+                paddingTop: 0,
+                paddingRight: 0,
+                paddingBottom: 0,
+                flexShrink: 0,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxSizing: 'border-box',
+                backgroundColor: 'transparent',
+                border: 'none',
+                '&:hover': {
+                  backgroundColor: 'transparent',
+                },
+              }}
+              aria-label="Collapse sidebar"
+            >
+              <Box
+                sx={{
+                  width: 24,
+                  height: 24,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  overflow: 'hidden',
+                  flexShrink: 0,
+                  border: '1px solid #2B2733',
+                  borderRadius: '8px',
+                  boxSizing: 'border-box',
+                  padding: '2px',
+                }}
+              >
+                <Box
+                  component="img"
+                  src="http://localhost:3845/assets/7a6bc0387560d8fe3d9262feb0a0750237710908.svg"
+                  alt="Sidebar panel icon"
+                  sx={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'contain',
+                  }}
+                />
+              </Box>
+            </IconButton>
+          )}
+          
+          <Menu
               id="_r_2_"
               anchorEl={companyMenuAnchor}
               open={Boolean(companyMenuAnchor)}
@@ -779,11 +1067,22 @@ export function SideNav({
                 elevation: 8,
                 sx: {
                   mt: 1,
-                  minWidth: 274,
-                  maxWidth: 274,
+                  ml: '-8px',
+                  minWidth: 284,
+                  maxWidth: 284,
                   backgroundColor: '#17161D',
                   border: '1px solid #2b2733',
                   borderRadius: '8px',
+                  '& .MuiList-root': {
+                    backgroundColor: '#17161D',
+                    padding: 0,
+                  },
+                },
+              }}
+              MenuListProps={{
+                sx: {
+                  backgroundColor: '#17161D',
+                  padding: 0,
                 },
               }}
               disableAutoFocus
@@ -806,16 +1105,20 @@ export function SideNav({
                 },
               }}
             >
-              <Box sx={{ p: '16px 8px' }}>
+              <Box sx={{ 
+                p: '16px 8px', 
+                minWidth: '284px',
+                maxWidth: '284px',
+              }}>
                 {/* User Email */}
-                <Box sx={{ px: 1, py: 1 }}>
+                <Box sx={{ px: 1, py: 1, width: '100%' }}>
                   <Typography 
                     sx={{ 
                       fontSize: '12px',
                       fontWeight: 400,
                       lineHeight: 1.66,
                       letterSpacing: '0.4px',
-                      color: 'text.primary'
+                      color: '#ffffff'
                     }}
                   >
                     {userEmail}
@@ -825,7 +1128,7 @@ export function SideNav({
                 <Divider sx={{ my: 1, borderColor: '#3d3744' }} />
 
                 {/* Theme Toggle */}
-                <Box sx={{ px: 1, py: 1 }}>
+                <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', width: '100%' }}>
                   <Box
                     onClick={(e) => {
                       e.stopPropagation()
@@ -834,35 +1137,22 @@ export function SideNav({
                     sx={{
                       display: 'flex',
                       alignItems: 'center',
-                      position: 'relative',
-                      backgroundColor: themeMode === 'dark' ? '#1e1c26' : '#edeedf',
-                      border: themeMode === 'dark' ? '1px solid #2b2733' : '1px solid #c6ca92',
+                      gap: '8px',
+                      paddingLeft: '4px',
+                      paddingRight: '16px',
+                      paddingTop: '4px',
+                      paddingBottom: '4px',
+                      backgroundColor: '#1E1C26',
+                      border: '1px solid #2B2733',
                       borderRadius: '40px',
-                      px: 0,
-                      py: '4px',
                       width: '92px',
-                      height: '32px',
+                      height: '40px',
                       cursor: 'pointer',
-                      gap: 0,
+                      flexShrink: 0,
                     }}
                   >
-                    {/* Dark Section */}
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '8px',
-                        pl: '4px',
-                        pr: themeMode === 'dark' ? '16px' : '4px',
-                        py: 0,
-                        flex: themeMode === 'dark' ? '1 1 auto' : '0 0 50%',
-                        justifyContent: 'flex-start',
-                        transition: 'all 0.2s ease-in-out',
-                        minWidth: 0,
-                        overflow: 'hidden',
-                      }}
-                    >
-                      {themeMode === 'dark' && (
+                    {themeMode === 'dark' ? (
+                      <>
                         <Box
                           sx={{
                             backgroundColor: '#3d3744',
@@ -874,53 +1164,37 @@ export function SideNav({
                             alignItems: 'center',
                             justifyContent: 'center',
                             flexShrink: 0,
+                            overflow: 'hidden',
                           }}
                         >
-                          <DarkMode sx={{ fontSize: 18, color: '#ffffff' }} />
+                          <Box
+                            component="img"
+                            src="http://localhost:3845/assets/6d9ec70c4e4a8e04f9eba0edb7e32c5f7de1b7e3.svg"
+                            alt="Moon icon"
+                            sx={{
+                              width: '100%',
+                              height: '100%',
+                              objectFit: 'contain',
+                            }}
+                          />
                         </Box>
-                      )}
-                      <Typography
-                        sx={{
-                          fontSize: '13px',
-                          fontWeight: 500,
-                          lineHeight: '22px',
-                          letterSpacing: '0.46px',
-                          color: themeMode === 'dark' ? '#ffffff' : '#554b55',
-                          whiteSpace: 'nowrap',
-                        }}
-                      >
-                        Dark
-                      </Typography>
-                    </Box>
-                    {/* Light Section */}
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '8px',
-                        pl: themeMode === 'light' ? '16px' : '4px',
-                        pr: '4px',
-                        py: 0,
-                        flex: themeMode === 'light' ? '1 1 auto' : '0 0 50%',
-                        justifyContent: 'flex-end',
-                        transition: 'all 0.2s ease-in-out',
-                        minWidth: 0,
-                        overflow: 'hidden',
-                      }}
-                    >
-                      <Typography
-                        sx={{
-                          fontSize: '13px',
-                          fontWeight: 500,
-                          lineHeight: '22px',
-                          letterSpacing: '0.46px',
-                          color: themeMode === 'light' ? '#554b55' : '#ffffff',
-                          whiteSpace: 'nowrap',
-                        }}
-                      >
-                        Light
-                      </Typography>
-                      {themeMode === 'light' && (
+                        <Typography
+                          sx={{
+                            fontFamily: 'Roboto, sans-serif',
+                            fontSize: '13px',
+                            fontWeight: 500,
+                            lineHeight: '22px',
+                            letterSpacing: '0.46px',
+                            color: '#ffffff',
+                            whiteSpace: 'nowrap',
+                            flexShrink: 0,
+                          }}
+                        >
+                          Dark
+                        </Typography>
+                      </>
+                    ) : (
+                      <>
                         <Box
                           sx={{
                             backgroundColor: '#c6ca92',
@@ -932,21 +1206,37 @@ export function SideNav({
                             alignItems: 'center',
                             justifyContent: 'center',
                             flexShrink: 0,
+                            overflow: 'hidden',
                           }}
                         >
                           <LightMode sx={{ fontSize: 18, color: '#ffffff' }} />
                         </Box>
-                      )}
-                    </Box>
+                        <Typography
+                          sx={{
+                            fontFamily: 'Roboto, sans-serif',
+                            fontSize: '13px',
+                            fontWeight: 500,
+                            lineHeight: '22px',
+                            letterSpacing: '0.46px',
+                            color: '#554b55',
+                            whiteSpace: 'nowrap',
+                            flexShrink: 0,
+                          }}
+                        >
+                          Light
+                        </Typography>
+                      </>
+                    )}
                   </Box>
                   <Typography 
                     sx={{ 
-                      mt: 1,
                       fontSize: '12px',
                       fontWeight: 400,
                       lineHeight: 1.66,
                       letterSpacing: '0.4px',
-                      color: '#b6bab1'
+                      color: '#b6bab1',
+                      flex: 1,
+                      minWidth: 0,
                     }}
                   >
                     This only applies to the current browser.
@@ -955,71 +1245,85 @@ export function SideNav({
 
                 <Divider sx={{ my: 1, borderColor: '#3d3744' }} />
 
-                {/* Company Settings */}
-                <MenuItem
-                  component={NextLink}
-                  href="/company-settings"
-                  onClick={handleCompanyMenuClose}
-                  sx={{ 
-                    px: 1, 
-                    py: 0.75,
-                    borderRadius: '6px',
-                    minHeight: 'auto',
-                  }}
-                >
-                  <Typography sx={{ fontSize: '14px', fontWeight: 400, lineHeight: 1.43, letterSpacing: '0.17px', color: 'text.primary' }}>
-                    Company Settings
-                  </Typography>
-                </MenuItem>
+                {/* Menu Items Section */}
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, width: '100%' }}>
+                  {/* Company Settings - not a clickable item, just text */}
+                  <Box
+                    sx={{
+                      px: 1,
+                      py: 0.75,
+                      borderRadius: '4px',
+                    }}
+                  >
+                    <Typography sx={{ fontSize: '14px', fontWeight: 400, lineHeight: 1.43, letterSpacing: '0.17px', color: '#ffffff' }}>
+                      Company Settings
+                    </Typography>
+                  </Box>
 
-                {/* Admin */}
-                <MenuItem
-                  component={NextLink}
-                  href="/admin-settings"
-                  onClick={handleCompanyMenuClose}
-                  sx={{ 
-                    px: 1, 
-                    py: 0.75,
-                    borderRadius: '6px',
-                    minHeight: 'auto',
-                  }}
-                >
-                  <Typography sx={{ fontSize: '14px', fontWeight: 400, lineHeight: 1.43, letterSpacing: '0.17px', color: 'text.primary' }}>
-                    Admin
-                  </Typography>
-                </MenuItem>
+                  {/* Admin */}
+                  <MenuItem
+                    component={NextLink}
+                    href="/admin-settings"
+                    onClick={handleCompanyMenuClose}
+                    sx={{ 
+                      px: 1, 
+                      py: 0.75,
+                      borderRadius: '4px',
+                      minHeight: 'auto',
+                      '&:hover': {
+                        backgroundColor: 'transparent',
+                      },
+                    }}
+                  >
+                    <Typography sx={{ fontSize: '14px', fontWeight: 400, lineHeight: 1.43, letterSpacing: '0.17px', color: '#ffffff' }}>
+                      Admin
+                    </Typography>
+                  </MenuItem>
 
-                {/* Log Out */}
-                <MenuItem
-                  onClick={() => {
-                    handleLogout()
-                    handleCompanyMenuClose()
-                  }}
-                  sx={{ 
-                    px: 1, 
-                    py: 0.75,
-                    borderRadius: '6px',
-                    minHeight: 'auto',
-                  }}
-                >
-                  <Stack direction="row" spacing={1} alignItems="center" sx={{ width: '100%', justifyContent: 'space-between' }}>
-                    <Typography sx={{ fontSize: '14px', fontWeight: 400, lineHeight: 1.43, letterSpacing: '0.17px', color: 'text.primary' }}>
+                  {/* Log Out */}
+                  <MenuItem
+                    onClick={() => {
+                      handleLogout()
+                      handleCompanyMenuClose()
+                    }}
+                    sx={{ 
+                      px: 1, 
+                      py: 0.75,
+                      borderRadius: '4px',
+                      minHeight: 'auto',
+                      display: 'flex',
+                      gap: 1,
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      '&:hover': {
+                        backgroundColor: 'transparent',
+                      },
+                    }}
+                  >
+                    <Typography sx={{ fontSize: '14px', fontWeight: 400, lineHeight: 1.43, letterSpacing: '0.17px', color: '#ffffff' }}>
                       Log Out
                     </Typography>
-                    <Logout sx={{ fontSize: 16 }} />
-                  </Stack>
-                </MenuItem>
+                    <Logout sx={{ fontSize: 16, color: '#ffffff' }} />
+                  </MenuItem>
+                </Box>
 
                 <Divider sx={{ my: 1, borderColor: '#3d3744' }} />
 
                 {/* Version Info */}
-                <Box sx={{ px: 1, py: 0.75 }}>
+                <Box sx={{ 
+                  px: 1, 
+                  py: 0.75,
+                  height: '32px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  width: '100%',
+                }}>
                   <Typography 
                     sx={{ 
                       fontSize: '10px',
                       fontWeight: 500,
                       lineHeight: '14px',
-                      color: 'text.primary'
+                      color: '#ffffff'
                     }}
                   >
                     Version {version} ({versionDate})
@@ -1034,42 +1338,68 @@ export function SideNav({
                   sx={{ 
                     px: 1, 
                     py: 0.75,
-                    borderRadius: '6px',
+                    borderRadius: '4px',
                     minHeight: 'auto',
+                    '&:hover': {
+                      backgroundColor: 'transparent',
+                    },
                   }}
                 >
-                  <Typography sx={{ fontSize: '14px', fontWeight: 400, lineHeight: '20px', color: 'text.primary' }}>
+                  <Typography sx={{ fontSize: '14px', fontWeight: 400, lineHeight: '20px', color: '#ffffff' }}>
                     Terms of use
                   </Typography>
                 </MenuItem>
               </Box>
             </Menu>
-          </Box>
-          <IconButton
-            size="small"
-            onClick={handleToggleCollapse}
-            sx={{
-              width: 24,
-              height: 24,
-              color: 'text.primary',
-              '&:hover': {
-                backgroundColor: 'action.hover',
-              },
-            }}
-            aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-          >
-            <MenuIcon sx={{ fontSize: 24 }} />
-          </IconButton>
-        </Stack>
+        </Box>
 
         {/* Navigation */}
-        {!isCollapsed && (
-          <Box sx={{ flex: 1, overflowY: 'auto', p: 1 }}>
-            <List disablePadding>
+        <Box sx={{ flex: 1, overflowY: 'auto', width: '100%' }}>
+          {isCollapsed ? (
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {navItems.map((item) => {
+                const icon = item.icon && typeof item.icon === 'string' ? iconMap[item.icon] : item.icon
+                return (
+                  <Box
+                    key={item.id}
+                    component={item.path ? (item.external ? 'a' : NextLink) : 'div'}
+                    href={item.path}
+                    target={item.external ? '_blank' : undefined}
+                    rel={item.external ? 'noreferrer' : undefined}
+                    onClick={(e: React.MouseEvent) => {
+                      // Don't stop propagation - let the parent handle reopening
+                      // Navigation will happen naturally via NextLink or anchor
+                    }}
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      height: 48,
+                      px: '4px',
+                      py: '6px',
+                      borderRadius: '8px',
+                      cursor: 'pointer',
+                      textDecoration: 'none',
+                      '&:hover': {
+                        backgroundColor: '#2A2A2C',
+                      },
+                    }}
+                  >
+                    {icon && (
+                      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#ffffff', width: 24, height: 24 }}>
+                        {icon}
+                      </Box>
+                    )}
+                  </Box>
+                )
+              })}
+            </Box>
+          ) : (
+            <List disablePadding sx={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               {navItems.map((item) => renderNavItem(item))}
             </List>
-          </Box>
-        )}
+          )}
+        </Box>
       </Box>
     </Drawer>
   )

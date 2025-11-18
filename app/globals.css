@@ -25,3 +25,26 @@ a {
   text-decoration: none;
 }
 
+/* Hide Next.js error overlay */
+#__next-build-watcher,
+#__next-error-overlay,
+nextjs-portal,
+[data-nextjs-dialog],
+[data-nextjs-dialog-overlay],
+[data-nextjs-toast] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Hide error notification drawer in sidebar */
+.MuiDrawer-root [class*="error"][class*="notification"],
+.MuiDrawer-root [class*="error"][class*="drawer"],
+.MuiDrawer-root [class*="error"][class*="toast"],
+aside [class*="error"][class*="notification"],
+aside [class*="error"][class*="drawer"],
+aside [class*="error"][class*="toast"] {
+  display: none !important;
+}
+
