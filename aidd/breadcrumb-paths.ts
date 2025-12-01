@@ -121,6 +121,10 @@ export const breadcrumbPaths: Record<string, BreadcrumbItem[]> = {
     { label: 'Emission Factors' },
     { label: 'Matching Rules' },
   ],
+  '/workflow': [
+    { label: 'My Projects' },
+    { label: 'New project' },
+  ],
   '/reports': [{ label: 'Home', path: '/' }, { label: 'Reports' }],
   '/documentation': [{ label: 'Home', path: '/' }, { label: 'Documentation' }],
   '/contact-support': [{ label: 'Home', path: '/' }, { label: 'Contact Support' }],

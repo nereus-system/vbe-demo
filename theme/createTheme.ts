@@ -96,7 +96,7 @@ function createMuiTheme(mode: 'light' | 'dark'): Theme {
       MuiCssBaseline: {
         styleOverrides: {
           body: {
-            backgroundColor: palette.background.surface[mode],
+            backgroundColor: '#17161D',
             color: palette.content.default[mode],
           },
         },

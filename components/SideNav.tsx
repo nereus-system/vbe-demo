@@ -29,6 +29,7 @@ import {
   DarkMode,
   LightMode,
   Logout,
+  AccountTree,
 } from '@mui/icons-material'
 
 interface NavItem {
@@ -60,6 +61,12 @@ const getNavItems = (): NavItem[] => [
       label: 'Home',
       icon: 'home',
       path: '/',
+    },
+    {
+      id: 'workflow',
+      label: 'Projects',
+      icon: 'workflow',
+      path: '/workflow',
     },
     {
       id: 'my-footprint',
@@ -220,6 +227,7 @@ const HeadsetIcon = () => (
 
 const iconMap: Record<string, React.ReactNode> = {
   home: <Home sx={{ fontSize: 24 }} />,
+  workflow: <AccountTree sx={{ fontSize: 24 }} />,
   nature: <NatureIcon />,
   timeline: <TimelineIcon />,
   storage: <StorageIcon />,
@@ -1036,16 +1044,23 @@ export function SideNav({
                   padding: '2px',
                 }}
               >
-                <Box
-                  component="img"
-                  src="http://localhost:3845/assets/7a6bc0387560d8fe3d9262feb0a0750237710908.svg"
-                  alt="Sidebar panel icon"
-                  sx={{
-                    width: '100%',
-                    height: '100%',
-                    objectFit: 'contain',
-                  }}
-                />
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 20 20"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  style={{ width: '100%', height: '100%' }}
+                >
+                  <path
+                    d="M18 3C18 2.44772 17.5523 2 17 2H3C2.44772 2 2 2.44772 2 3V17C2 17.5523 2.44772 18 3 18H17C17.5523 18 18 17.5523 18 17V3ZM20 17C20 18.6569 18.6569 20 17 20H3C1.34315 20 0 18.6569 0 17V3C0 1.34315 1.34315 0 3 0H17C18.6569 0 20 1.34315 20 3V17Z"
+                    fill="white"
+                  />
+                  <path
+                    d="M6 19V1C6 0.447715 6.44772 0 7 0C7.55228 0 8 0.447715 8 1V19C8 19.5523 7.55228 20 7 20C6.44772 20 6 19.5523 6 19Z"
+                    fill="white"
+                  />
+                </svg>
               </Box>
             </IconButton>
           )}

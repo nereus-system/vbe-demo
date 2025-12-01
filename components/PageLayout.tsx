@@ -13,6 +13,7 @@ interface PageLayoutProps {
 export function PageLayout({ children }: PageLayoutProps) {
   const pathname = usePathname()
   const breadcrumbs = getBreadcrumbs(pathname)
+  const isWorkflowPage = pathname === '/workflow'
 
   return (
     <Box sx={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>
@@ -25,12 +26,12 @@ export function PageLayout({ children }: PageLayoutProps) {
           overflow: 'hidden',
         }}
       >
-        <Breadcrumb items={breadcrumbs} />
+        {!isWorkflowPage && <Breadcrumb items={breadcrumbs} />}
         <Box
           sx={{
             flex: 1,
             overflow: 'auto',
-            p: 3,
+            p: isWorkflowPage ? 0 : 3,
           }}
         >
           {children}
