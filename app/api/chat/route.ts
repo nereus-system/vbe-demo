@@ -152,15 +152,7 @@ STEP 4 — FILE RECOMMENDATIONS
 
 Title: **Recommended Files to Upload**
 
-Show bullets (short, clean, not overwhelming):
-
-- Purchased products list (quantities, categories, spend)  
-
-- Suppliers list (names, regions)  
-
-- Procurement info (materials, spend, volumes)  
-
-- Optional: BU hierarchy, categories, sites  
+(Do NOT list file recommendations in text. The UI will show a file selection card.)
 
 Then ask:
 

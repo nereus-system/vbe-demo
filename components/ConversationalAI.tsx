@@ -413,6 +413,16 @@ export function ConversationalAI({ width = 374, onAnalysisComplete, onGoalSelect
       content: messageText.trim(),
     }
 
+    // Handle state transitions for text-input steps
+    // Step 3: Yes path (Description)
+    if (flowStep === 'phase1_step3_prior_experience' && priorExperience === true && messageText !== 'Yes') {
+        setFlowStep('phase1_step4_file_recommendations')
+    }
+    // Step 17: Yes path (Rule Description)
+    if (flowStep === 'phase2_step17_optional_custom_rules' && messageText !== 'Yes' && messageText !== 'No') {
+         setFlowStep('phase3_step18_select_ef_priority')
+    }
+
     setMessages((prev) => [...prev, userMessage])
     setInput('')
     setIsLoading(true)
@@ -662,8 +672,6 @@ export function ConversationalAI({ width = 374, onAnalysisComplete, onGoalSelect
                                     onClick={handleStep4Continue}
                                     sx={{ 
                                         mt: 2,
-                                        bgcolor: '#2E7D32', // Matches screenshot green somewhat, or stick to purple? User said "keeping our branding".
-                                        // Screenshot has green. User says "keeping our branding". 
                                         // Branding is purple (#A855F7). I will use purple gradient.
                                         background: 'linear-gradient(90deg, #A855F7 0%, #7C3AED 100%)',
                                         textTransform: 'none',
