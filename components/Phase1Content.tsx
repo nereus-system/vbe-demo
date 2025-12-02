@@ -149,24 +149,23 @@ function VerticalStepper() {
             </Typography>
           </Box>
           
-          {/* Connector Line - centered with icon, 8px height */}
+          {/* Connector Line - centered with icon */}
           {index < steps.length - 1 && (
             <Box
               sx={{
                 display: 'flex',
-                alignItems: 'stretch',
+                alignItems: 'center',
                 width: '100%',
-                height: 8, // Exactly 8px height
-                paddingTop: 0,
-                paddingBottom: 0,
+                height: '16px', // Increased height for better spacing
+                padding: 0,
                 boxSizing: 'border-box',
                 position: 'relative',
               }}
             >
-              {/* Center the 1px line in the 24px icon area: (24 - 1) / 2 = 11.5px */}
+              {/* Center the 1px line in the 24px icon area */}
               <Box
                 sx={{
-                  width: 1, // 1px width
+                  width: '1px', // Explicit 1px width
                   height: '100%',
                   bgcolor: '#554b55',
                   position: 'absolute',
