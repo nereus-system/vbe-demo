@@ -49,22 +49,23 @@ function VerticalStepper() {
       sx={{
         display: 'flex',
         flexDirection: 'column',
-        gap: 1,
+        gap: 0,
         width: 125,
         alignItems: 'flex-start',
-        justifyContent: 'center',
       }}
     >
       {steps.map((step, index) => (
-        <Box key={step.id} sx={{ width: '100%' }}>
+        <Box key={step.id} sx={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
+          {/* Step Row */}
           <Box
             sx={{
               display: 'flex',
-              gap: 1,
+              gap: 1, // 8px gap between icon and text
               alignItems: 'center',
+              width: '100%',
             }}
           >
-            {/* Step Icon */}
+            {/* Step Icon Container - exactly 24x24px */}
             <Box
               sx={{
                 width: 24,
@@ -75,44 +76,67 @@ function VerticalStepper() {
                 alignItems: 'center',
                 justifyContent: 'center',
                 position: 'relative',
-                boxSizing: 'border-box',
-                px: step.state === 'done' ? 0 : '7px',
-                py: 0,
+                flexShrink: 0,
               }}
             >
               {step.state === 'done' ? (
-                <CheckCircle sx={{ fontSize: 24, color: '#44c571' }} />
+                <CheckCircle 
+                  sx={{ 
+                    fontSize: 24, 
+                    width: 24,
+                    height: 24,
+                    color: '#44c571' 
+                  }} 
+                />
               ) : (
                 <Box
                   sx={{
-                    width: 20,
-                    height: 20,
-                    borderRadius: '50%',
-                    bgcolor: '#554b55',
+                    width: 24,
+                    height: 24,
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     position: 'relative',
-                    left: '2px',
-                    top: '2px',
                   }}
                 >
-                  <Typography
+                  {/* 20px circle with 2px offset (centered in 24px) */}
+                  <Box
                     sx={{
-                      fontSize: 12,
-                      color: '#ffffff',
-                      fontWeight: 400,
-                      lineHeight: 1.66,
-                      fontFamily: 'Roboto, sans-serif',
-                      letterSpacing: '0.4px',
-                      textAlign: 'center',
+                      width: 20,
+                      height: 20,
+                      borderRadius: '50%',
+                      bgcolor: '#554b55',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      position: 'absolute',
+                      left: '2px',
+                      top: '2px',
                     }}
                   >
-                    {step.id}
-                  </Typography>
+                    <Typography
+                      sx={{
+                        fontSize: 12,
+                        color: '#ffffff',
+                        fontWeight: 400,
+                        lineHeight: 1.66,
+                        fontFamily: 'Roboto, sans-serif',
+                        letterSpacing: '0.4px',
+                        textAlign: 'center',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        width: '100%',
+                        height: '100%',
+                      }}
+                    >
+                      {step.id}
+                    </Typography>
+                  </Box>
                 </Box>
               )}
             </Box>
+            
             {/* Step Label */}
             <Typography
               sx={{
@@ -123,29 +147,32 @@ function VerticalStepper() {
                 letterSpacing: step.fontWeight === 'medium' ? '0.1px' : '0.17px',
                 fontFamily: 'Roboto, sans-serif',
                 whiteSpace: 'nowrap',
+                flexShrink: 0,
               }}
             >
               {step.label}
             </Typography>
           </Box>
-          {/* Connector Line */}
+          
+          {/* Connector Line - only between steps, not after last */}
           {index < steps.length - 1 && (
             <Box
               sx={{
                 display: 'flex',
                 alignItems: 'center',
-                minHeight: 8,
-                px: 1.5,
+                justifyContent: 'center',
+                width: '100%',
                 py: 0,
+                px: 1.5, // 12px horizontal padding
                 boxSizing: 'border-box',
               }}
             >
               <Box
                 sx={{
                   width: 1,
-                  height: '100%',
+                  height: 8, // 8px connector height
                   bgcolor: '#554b55',
-                  flexGrow: 1,
+                  flexShrink: 0,
                 }}
               />
             </Box>
