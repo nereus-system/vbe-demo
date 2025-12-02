@@ -30,16 +30,17 @@ import {
 interface Step {
   id: number
   label: string
-  state: 'done' | 'active' | 'default'
+  state: 'done' | 'default'
+  fontWeight?: 'medium' | 'regular'
 }
 
 const steps: Step[] = [
-  { id: 1, label: 'Data Ingestion', state: 'done' },
-  { id: 2, label: 'Step 2', state: 'default' },
-  { id: 3, label: 'Step 3', state: 'default' },
-  { id: 4, label: 'Step 4', state: 'default' },
-  { id: 5, label: 'Step 5', state: 'default' },
-  { id: 6, label: 'Step 6', state: 'default' },
+  { id: 1, label: 'Data Ingestion', state: 'done', fontWeight: 'medium' },
+  { id: 2, label: 'Step 2', state: 'default', fontWeight: 'medium' },
+  { id: 3, label: 'Step 3', state: 'default', fontWeight: 'regular' },
+  { id: 4, label: 'Step 4', state: 'default', fontWeight: 'regular' },
+  { id: 5, label: 'Step 5', state: 'default', fontWeight: 'regular' },
+  { id: 6, label: 'Step 6', state: 'default', fontWeight: 'regular' },
 ]
 
 function VerticalStepper() {
@@ -50,10 +51,12 @@ function VerticalStepper() {
         flexDirection: 'column',
         gap: 1,
         width: 125,
+        alignItems: 'flex-start',
+        justifyContent: 'center',
       }}
     >
       {steps.map((step, index) => (
-        <Box key={step.id}>
+        <Box key={step.id} sx={{ width: '100%' }}>
           <Box
             sx={{
               display: 'flex',
@@ -66,10 +69,15 @@ function VerticalStepper() {
               sx={{
                 width: 24,
                 height: 24,
+                minWidth: 24,
+                minHeight: 24,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 position: 'relative',
+                boxSizing: 'border-box',
+                px: step.state === 'done' ? 0 : '7px',
+                py: 0,
               }}
             >
               {step.state === 'done' ? (
@@ -80,11 +88,13 @@ function VerticalStepper() {
                     width: 20,
                     height: 20,
                     borderRadius: '50%',
-                    border: '2px solid #554b55',
+                    bgcolor: '#554b55',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    bgcolor: 'transparent',
+                    position: 'relative',
+                    left: '2px',
+                    top: '2px',
                   }}
                 >
                   <Typography
@@ -93,6 +103,9 @@ function VerticalStepper() {
                       color: '#ffffff',
                       fontWeight: 400,
                       lineHeight: 1.66,
+                      fontFamily: 'Roboto, sans-serif',
+                      letterSpacing: '0.4px',
+                      textAlign: 'center',
                     }}
                   >
                     {step.id}
@@ -104,10 +117,12 @@ function VerticalStepper() {
             <Typography
               sx={{
                 fontSize: 14,
-                fontWeight: step.state === 'done' ? 500 : 400,
+                fontWeight: step.fontWeight === 'medium' ? 500 : 400,
                 color: step.state === 'done' ? '#ffffff' : '#73696d',
-                lineHeight: 1.57,
-                letterSpacing: '0.1px',
+                lineHeight: step.fontWeight === 'medium' ? 1.57 : 1.43,
+                letterSpacing: step.fontWeight === 'medium' ? '0.1px' : '0.17px',
+                fontFamily: 'Roboto, sans-serif',
+                whiteSpace: 'nowrap',
               }}
             >
               {step.label}
@@ -117,13 +132,23 @@ function VerticalStepper() {
           {index < steps.length - 1 && (
             <Box
               sx={{
-                width: 1,
-                height: 8,
-                bgcolor: '#554b55',
-                ml: 1.5,
-                mt: 1,
+                display: 'flex',
+                alignItems: 'center',
+                minHeight: 8,
+                px: 1.5,
+                py: 0,
+                boxSizing: 'border-box',
               }}
-            />
+            >
+              <Box
+                sx={{
+                  width: 1,
+                  height: '100%',
+                  bgcolor: '#554b55',
+                  flexGrow: 1,
+                }}
+              />
+            </Box>
           )}
         </Box>
       ))}
