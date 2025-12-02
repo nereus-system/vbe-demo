@@ -7,9 +7,6 @@ import {
   Button,
   Chip,
   IconButton,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
   Tabs,
   Tab,
 } from '@mui/material'
@@ -181,7 +178,7 @@ function VerticalStepper() {
   )
 }
 
-// File Row Component
+// File Row Component for Data Quality Review
 interface FileRowProps {
   fileName: string
   category: string
@@ -190,7 +187,6 @@ interface FileRowProps {
   warnings: number
   missing: number
   importedRows: string
-  status?: 'success' | 'error' | 'warning'
 }
 
 function FileRow({
@@ -201,7 +197,6 @@ function FileRow({
   warnings,
   missing,
   importedRows,
-  status = 'success',
 }: FileRowProps) {
   return (
     <Box
@@ -209,84 +204,88 @@ function FileRow({
         border: '1px solid #2b2733',
         borderRadius: 1,
         p: 1,
-        mb: 1.5,
         display: 'flex',
         gap: 1,
         alignItems: 'center',
+        height: 66,
       }}
     >
-      {/* Chevron Icon */}
-      <Box sx={{ width: 18, height: 18, display: 'flex', alignItems: 'center' }}>
+      {/* Chevron Icon Container */}
+      <Box sx={{ width: 18, height: 42, display: 'flex', alignItems: 'flex-start', pt: 0.5 }}>
         <ChevronRight sx={{ fontSize: 18, color: '#ffffff' }} />
       </Box>
 
       {/* Main Content */}
-      <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', flex: 1 }}>
-        {/* Status Icon */}
-        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', pt: 0.5 }}>
-          {status === 'success' && (
+      <Box sx={{ display: 'flex', gap: 1, alignItems: 'flex-start', flex: 1, justifyContent: 'space-between' }}>
+        {/* Left Side - Status Icon + File Info */}
+        <Box sx={{ display: 'flex', gap: 1, alignItems: 'flex-start' }}>
+          {/* Status Icon */}
+          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', pt: 0.5 }}>
             <CheckCircle sx={{ fontSize: 20, color: '#44c571' }} />
-          )}
-        </Box>
+          </Box>
 
-        {/* File Info */}
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5, flex: 1 }}>
-          <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+          {/* File Info */}
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+            <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+              <Typography
+                sx={{
+                  fontSize: 16,
+                  fontWeight: 700,
+                  color: '#ffffff',
+                  lineHeight: 1.5,
+                  letterSpacing: '0.15px',
+                  fontFamily: 'Roboto, sans-serif',
+                }}
+              >
+                {fileName}
+              </Typography>
+              <Chip
+                label={category}
+                size="small"
+                sx={{
+                  bgcolor: '#103856',
+                  color: '#ffffff',
+                  fontSize: 14,
+                  fontWeight: 700,
+                  height: 24,
+                  '& .MuiChip-label': { px: 0.75, py: 0.375 },
+                }}
+              />
+            </Box>
             <Typography
               sx={{
-                fontSize: 16,
-                fontWeight: 700,
-                color: '#ffffff',
-                lineHeight: 1.5,
-                letterSpacing: '0.15px',
+                fontSize: 14,
+                color: '#b6bab1',
+                lineHeight: 1.43,
+                letterSpacing: '0.17px',
+                maxHeight: 54,
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                fontFamily: 'Roboto, sans-serif',
               }}
             >
-              {fileName}
+              {description}
             </Typography>
-            <Chip
-              label={category}
-              size="small"
-              sx={{
-                bgcolor: '#103856',
-                color: '#ffffff',
-                fontSize: 14,
-                fontWeight: 700,
-                height: 24,
-                '& .MuiChip-label': { px: 1 },
-              }}
-            />
           </Box>
-          <Typography
-            sx={{
-              fontSize: 14,
-              color: '#b6bab1',
-              lineHeight: 1.43,
-              letterSpacing: '0.17px',
-              maxHeight: 54,
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-            }}
-          >
-            {description}
-          </Typography>
         </Box>
 
-        {/* Validation Info */}
+        {/* Right Side - Validation Info */}
         <Box
           sx={{
             display: 'flex',
             flexDirection: 'column',
-            gap: 0.5,
+            gap: 1,
             width: 160,
-            alignItems: 'flex-end',
+            alignItems: 'flex-start',
+            height: 50,
           }}
         >
-          <Box sx={{ display: 'flex', gap: 0.5 }}>
+          <Box sx={{ display: 'flex', gap: 0, alignItems: 'center' }}>
             <Button
               size="small"
-              startIcon={<ErrorIcon sx={{ fontSize: 16, color: '#e53e3b' }} />}
+              startIcon={<ErrorIcon sx={{ fontSize: 18, color: '#e53e3b' }} />}
               sx={{
-                minWidth: 42,
+                minWidth: 'auto',
                 height: 30,
                 px: 1.25,
                 py: 1,
@@ -297,6 +296,7 @@ function FileRow({
                 lineHeight: '22px',
                 letterSpacing: '0.46px',
                 textTransform: 'none',
+                fontFamily: 'Roboto, sans-serif',
                 '&:hover': { bgcolor: 'rgba(229, 62, 59, 0.1)' },
               }}
             >
@@ -304,9 +304,9 @@ function FileRow({
             </Button>
             <Button
               size="small"
-              startIcon={<Warning sx={{ fontSize: 16, color: '#edbf2f' }} />}
+              startIcon={<Warning sx={{ fontSize: 18, color: '#edbf2f' }} />}
               sx={{
-                minWidth: 50,
+                minWidth: 'auto',
                 height: 30,
                 px: 1.25,
                 py: 1,
@@ -317,6 +317,7 @@ function FileRow({
                 lineHeight: '22px',
                 letterSpacing: '0.46px',
                 textTransform: 'none',
+                fontFamily: 'Roboto, sans-serif',
                 '&:hover': { bgcolor: 'rgba(237, 191, 47, 0.1)' },
               }}
             >
@@ -324,9 +325,9 @@ function FileRow({
             </Button>
             <Button
               size="small"
-              startIcon={<SwapHoriz sx={{ fontSize: 16, color: '#d2d7cb' }} />}
+              startIcon={<SwapHoriz sx={{ fontSize: 18, color: '#d2d7cb' }} />}
               sx={{
-                minWidth: 50,
+                minWidth: 'auto',
                 height: 30,
                 px: 1.25,
                 py: 1,
@@ -337,6 +338,7 @@ function FileRow({
                 lineHeight: '22px',
                 letterSpacing: '0.46px',
                 textTransform: 'none',
+                fontFamily: 'Roboto, sans-serif',
                 '&:hover': { bgcolor: 'rgba(210, 215, 203, 0.1)' },
               }}
             >
@@ -351,6 +353,7 @@ function FileRow({
               letterSpacing: '0.17px',
               textDecoration: 'underline',
               cursor: 'pointer',
+              fontFamily: 'Roboto, sans-serif',
             }}
           >
             {importedRows}
@@ -366,18 +369,18 @@ function DataReqFolderSection() {
   const [expanded, setExpanded] = useState(false)
 
   return (
-    <Accordion
-      expanded={expanded}
-      onChange={() => setExpanded(!expanded)}
-      sx={{
-        bgcolor: 'transparent',
-        boxShadow: 'none',
-        '&:before': { display: 'none' },
-        '&.Mui-expanded': { margin: 0 },
-      }}
-    >
-      <AccordionSummary
-        expandIcon={
+    <Box sx={{ width: '100%' }}>
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          width: '100%',
+          cursor: 'pointer',
+        }}
+        onClick={() => setExpanded(!expanded)}
+      >
+        {/* Chevron Icon Container */}
+        <Box sx={{ width: 18, height: 42, display: 'flex', alignItems: 'center', justifyContent: 'center', pt: 0.5 }}>
           <ChevronRight
             sx={{
               fontSize: 18,
@@ -386,159 +389,134 @@ function DataReqFolderSection() {
               transition: 'transform 0.2s',
             }}
           />
-        }
-        sx={{
-          px: 0,
-          py: 0,
-          minHeight: 56,
-          '& .MuiAccordionSummary-content': {
-            margin: 0,
-            alignItems: 'center',
-          },
-        }}
-      >
-        <Box sx={{ display: 'flex', gap: 1.25, alignItems: 'center', width: '100%' }}>
+        </Box>
+
+        {/* Folder Content */}
+        <Box sx={{ display: 'flex', gap: 1.25, alignItems: 'center', flex: 1, pl: 1 }}>
           <Folder sx={{ fontSize: 20, color: '#ffffff' }} />
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flex: 1 }}>
-            <Box>
-              <Typography
-                sx={{
-                  fontSize: 16,
-                  color: '#ffffff',
-                  lineHeight: 1.5,
-                  letterSpacing: '0.15px',
-                }}
-              >
-                Footprint 2027
-                <Typography component="span" sx={{ fontSize: 16, fontWeight: 700, color: '#73696d', ml: 1.25 }}>
-                  3 files
-                </Typography>
+            <Typography
+              sx={{
+                fontSize: 16,
+                color: '#ffffff',
+                lineHeight: 1.5,
+                letterSpacing: '0.15px',
+                fontFamily: 'Roboto, sans-serif',
+              }}
+            >
+              Footprint 2027
+              <Typography component="span" sx={{ fontSize: 16, fontWeight: 700, color: '#73696d', ml: 1.25, fontFamily: 'Roboto, sans-serif' }}>
+                3 files
               </Typography>
-            </Box>
-            <Box sx={{ display: 'flex', gap: 0.5 }}>
+            </Typography>
+            <Box sx={{ display: 'flex', gap: 0, alignItems: 'center' }}>
               <IconButton
                 size="small"
                 sx={{
                   color: '#ffffff',
+                  width: 24,
+                  height: 24,
+                  p: 1,
                   '&:hover': { bgcolor: 'rgba(255, 255, 255, 0.1)' },
                 }}
               >
-                <StarBorder sx={{ fontSize: 20 }} />
+                <StarBorder sx={{ fontSize: 24 }} />
               </IconButton>
               <IconButton
                 size="small"
                 sx={{
                   color: '#ffffff',
+                  width: 24,
+                  height: 24,
+                  p: 1,
                   '&:hover': { bgcolor: 'rgba(255, 255, 255, 0.1)' },
                 }}
               >
-                <StarBorder sx={{ fontSize: 20 }} />
+                <StarBorder sx={{ fontSize: 24 }} />
               </IconButton>
             </Box>
           </Box>
         </Box>
-      </AccordionSummary>
-      <AccordionDetails sx={{ px: 0, py: 1 }}>
-        {/* Folder content would go here */}
-      </AccordionDetails>
-    </Accordion>
+      </Box>
+    </Box>
   )
 }
 
 // Activity Config Card Component
 interface ActivityConfigCardProps {
+  label: string
   title: string
-  subtitle?: string
   description: string
-  showFolderSection?: boolean
-  showFileRows?: boolean
-  files?: FileRowProps[]
+  children?: React.ReactNode
   actionButton?: React.ReactNode
 }
 
 function ActivityConfigCard({
+  label,
   title,
-  subtitle,
   description,
-  showFolderSection = false,
-  showFileRows = false,
-  files = [],
+  children,
   actionButton,
 }: ActivityConfigCardProps) {
   return (
     <Box
       sx={{
-        bgcolor: 'rgba(255, 255, 255, 0.02)',
-        border: '1px solid #3d3744',
+        bgcolor: '#1e1c26',
+        border: '1px solid #2b2733',
         borderRadius: 1,
-        p: 2,
+        p: 1.5,
         mb: 2,
       }}
     >
       {/* Header */}
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1.5 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', mb: 1 }}>
         <Typography
           sx={{
-            fontSize: 16,
+            fontSize: 12,
             fontWeight: 400,
-            color: '#ffffff',
-            lineHeight: 1.25,
+            color: '#73696d',
+            lineHeight: 1.66,
+            letterSpacing: '0.4px',
+            fontFamily: 'Roboto, sans-serif',
           }}
         >
-          {title}
+          {label}
         </Typography>
         {actionButton}
       </Box>
 
       {/* Content */}
-      <Box>
-        {subtitle && (
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, pb: 2 }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
           <Typography
             sx={{
               fontSize: 16,
-              fontWeight: 600,
+              fontWeight: 700,
               color: '#ffffff',
               lineHeight: 1.5,
-              mb: 1,
+              letterSpacing: '0.15px',
+              fontFamily: 'Roboto, sans-serif',
             }}
           >
-            {subtitle}
+            {title}
           </Typography>
-        )}
-        <Typography
-          sx={{
-            fontSize: 16,
-            fontWeight: 400,
-            color: '#b6bab1',
-            lineHeight: 1.5,
-            mb: showFolderSection || showFileRows ? 2 : 0,
-          }}
-        >
-          {description}
-        </Typography>
-
-        {showFolderSection && <DataReqFolderSection />}
-        {showFileRows && (
-          <Box sx={{ mt: 2 }}>
-            {files.map((file, index) => (
-              <FileRow key={index} {...file} />
-            ))}
-            <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 1.5 }}>
-              <Button
-                size="small"
-                sx={{
-                  color: '#44c571',
-                  fontSize: 13,
-                  fontWeight: 500,
-                  textTransform: 'none',
-                  '&:hover': { bgcolor: 'rgba(68, 197, 113, 0.1)' },
-                }}
-              >
-                Add File
-              </Button>
-            </Box>
-          </Box>
-        )}
+          <Typography
+            sx={{
+              fontSize: 12,
+              fontWeight: 400,
+              color: '#73696d',
+              lineHeight: 1.66,
+              letterSpacing: '0.4px',
+              fontFamily: 'Roboto, sans-serif',
+              height: 40,
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+            }}
+          >
+            {description}
+          </Typography>
+        </Box>
+        {children}
       </Box>
     </Box>
   )
@@ -714,51 +692,63 @@ export function Phase1Content() {
               fontWeight: 400,
               color: '#ffffff',
               lineHeight: 1.22,
-              mb: 1,
+              mb: 2,
+              fontFamily: 'Roboto, sans-serif',
             }}
           >
             Step 1 – Data Ingestion
           </Typography>
 
-          {/* Data Requirement Card */}
+          {/* Folder Creation Card */}
           <ActivityConfigCard
-            title="Data Requirements"
-            subtitle="Required Files"
-            description="To compute a Scope 3.1 footprint, we recommend uploading purchased products list, suppliers list, and procurement information including quantities, locations, and associated brands and categories."
-            showFolderSection={true}
+            label="Folder Creation"
+            title="You've Created a new folder named: Footprint 2027"
+            description="This is for creating your scope 3.1"
+          >
+            <DataReqFolderSection />
+          </ActivityConfigCard>
+
+          {/* Files Upload Card */}
+          <ActivityConfigCard
+            label="Files Upload"
+            title="You've uploaded 3 Files"
+            description="This is for creating your scope 3.1"
           />
 
-          {/* Uploaded Files Card */}
+          {/* Data Quality Review Card */}
           <ActivityConfigCard
-            title="Uploaded Files"
-            subtitle="Files"
-            description="Review your uploaded files and their validation status. You can add more files or correct issues found during ingestion."
-            showFileRows={true}
-            files={sampleFiles}
+            label="Data Quality Review"
+            title="We've analyzed your files"
+            description="Let's review it together"
             actionButton={
-              <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+              <Box sx={{ display: 'flex', gap: 1.25, alignItems: 'center' }}>
                 <Button
-                  size="small"
+                  variant="outlined"
                   sx={{
-                    color: '#44c571',
-                    borderColor: '#44c571',
+                    color: '#ffffff',
+                    borderColor: '#d2d7cb',
                     fontSize: 13,
                     fontWeight: 500,
                     textTransform: 'none',
-                    px: 2,
+                    px: 1.25,
+                    py: 0.5,
+                    borderRadius: 1,
+                    fontFamily: 'Roboto, sans-serif',
+                    letterSpacing: '0.46px',
                     '&:hover': {
-                      borderColor: '#44c571',
-                      bgcolor: 'rgba(68, 197, 113, 0.1)',
+                      borderColor: '#d2d7cb',
+                      bgcolor: 'rgba(210, 215, 203, 0.1)',
                     },
                   }}
-                  variant="outlined"
                 >
-                  Upload Files
+                  Bookmark for Support Decision
                 </Button>
                 <IconButton
                   size="small"
                   sx={{
                     color: '#ffffff',
+                    width: 24,
+                    height: 24,
                     '&:hover': { bgcolor: 'rgba(255, 255, 255, 0.1)' },
                   }}
                 >
@@ -766,7 +756,36 @@ export function Phase1Content() {
                 </IconButton>
               </Box>
             }
-          />
+          >
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+              {sampleFiles.map((file, index) => (
+                <FileRow key={index} {...file} />
+              ))}
+              <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 1.25 }}>
+                <Button
+                  variant="outlined"
+                  sx={{
+                    color: '#44c571',
+                    borderColor: '#44c571',
+                    fontSize: 13,
+                    fontWeight: 500,
+                    textTransform: 'none',
+                    px: 1.25,
+                    py: 0.5,
+                    borderRadius: 1,
+                    fontFamily: 'Roboto, sans-serif',
+                    letterSpacing: '0.46px',
+                    '&:hover': {
+                      borderColor: '#44c571',
+                      bgcolor: 'rgba(68, 197, 113, 0.1)',
+                    },
+                  }}
+                >
+                  Validate All
+                </Button>
+              </Box>
+            </Box>
+          </ActivityConfigCard>
         </Box>
       </Box>
     </Box>
