@@ -24,6 +24,7 @@ import {
   Add,
   Star,
   StarBorder,
+  Close,
 } from '@mui/icons-material'
 
 // Vertical Stepper Component
@@ -546,6 +547,7 @@ function ActivityConfigCard({
 // Main Component
 export function Phase1Content() {
   const [tabValue, setTabValue] = useState(0)
+  const [showSecondTab, setShowSecondTab] = useState(true)
 
   const sampleFiles: FileRowProps[] = [
     {
@@ -626,13 +628,16 @@ export function Phase1Content() {
             value={tabValue}
             onChange={(_, newValue) => setTabValue(newValue)}
             sx={{
-              width: 250,
               minHeight: 36,
               height: 36,
               bgcolor: '#2b2733',
               borderRadius: '8px 8px 0 0',
+              display: 'flex',
+              width: 'auto',
               '& .MuiTabs-flexContainer': {
                 height: '100%',
+                display: 'flex',
+                alignItems: 'flex-end',
               },
               '& .MuiTabs-indicator': {
                 display: 'none',
@@ -649,6 +654,9 @@ export function Phase1Content() {
                 letterSpacing: '0.4px',
                 lineHeight: 'normal',
                 borderRadius: '8px 8px 0 0',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1,
                 '&.Mui-selected': {
                   color: '#ffffff',
                   bgcolor: '#1e1c26',
@@ -660,8 +668,43 @@ export function Phase1Content() {
               },
             }}
           >
-            <Tab label="My Decision Timeline" disableRipple />
-            <Tab label="Standardized Data" disableRipple />
+            <Tab 
+              label="My Decision Timeline" 
+              disableRipple 
+              sx={{ width: 'auto' }}
+            />
+            {showSecondTab && (
+              <Tab 
+                label={
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <span>Standardized Data</span>
+                    <IconButton
+                      size="small"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        setShowSecondTab(false)
+                        if (tabValue === 1) {
+                          setTabValue(0)
+                        }
+                      }}
+                      sx={{
+                        width: 16,
+                        height: 16,
+                        padding: 0,
+                        color: 'inherit',
+                        '&:hover': {
+                          bgcolor: 'rgba(255, 255, 255, 0.1)',
+                        },
+                      }}
+                    >
+                      <Close sx={{ fontSize: 12 }} />
+                    </IconButton>
+                  </Box>
+                }
+                disableRipple
+                sx={{ width: 'auto' }}
+              />
+            )}
           </Tabs>
 
           {/* Step Title */}
