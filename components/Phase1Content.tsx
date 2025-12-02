@@ -24,6 +24,9 @@ import {
   Close,
   Edit,
   MoreVert,
+  CloudUpload,
+  History,
+  TableChart,
 } from '@mui/icons-material'
 
 // Vertical Stepper Component
@@ -176,6 +179,309 @@ function VerticalStepper() {
           )}
         </Box>
       ))}
+    </Box>
+  )
+}
+
+// File Upload Row Component for Files Upload section
+interface FileUploadRowProps {
+  fileName: string
+  category: string
+  description: string
+  fileUrl: string
+  version: string
+  uploadDate: string
+}
+
+function FileUploadRow({
+  fileName,
+  category,
+  description,
+  fileUrl,
+  version,
+  uploadDate,
+}: FileUploadRowProps) {
+  return (
+    <Box
+      sx={{
+        display: 'flex',
+        gap: 1, // 8px
+        alignItems: 'flex-start',
+        width: '100%',
+      }}
+    >
+      {/* Status Icon Container - padding top 4px */}
+      <Box 
+        sx={{ 
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          pb: 0,
+          pt: 0.5, // 4px
+          px: 0,
+          flexShrink: 0,
+        }}
+      >
+        <Box sx={{ width: 20, height: 20, display: 'flex', alignItems: 'flex-start' }}>
+          <CheckCircle sx={{ fontSize: 20, width: 20, height: 20, color: '#44c571' }} />
+        </Box>
+      </Box>
+
+      {/* Main Content */}
+      <Box 
+        sx={{ 
+          display: 'flex',
+          alignItems: 'flex-start',
+          justifyContent: 'space-between',
+          flex: 1,
+          minHeight: 0,
+          minWidth: 0,
+        }}
+      >
+        {/* Left Side - File Descriptors */}
+        <Box 
+          sx={{ 
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 0.5, // 4px
+            alignItems: 'flex-start',
+            flexShrink: 0,
+          }}
+        >
+          {/* File Name and Category */}
+          <Box 
+            sx={{ 
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'flex-start',
+              width: '100%',
+            }}
+          >
+            <Box 
+              sx={{ 
+                display: 'flex',
+                gap: 2, // 16px
+                alignItems: 'center',
+                width: '100%',
+              }}
+            >
+              <Typography
+                sx={{
+                  fontSize: 16,
+                  fontWeight: 700,
+                  color: '#ffffff',
+                  lineHeight: 1.5,
+                  letterSpacing: '0.15px',
+                  fontFamily: 'Roboto, sans-serif',
+                  whiteSpace: 'nowrap',
+                  flexShrink: 0,
+                }}
+              >
+                {fileName}
+              </Typography>
+              <Chip
+                icon={<TableChart sx={{ fontSize: 16, color: '#ffffff' }} />}
+                label={category}
+                size="small"
+                sx={{
+                  bgcolor: '#103856',
+                  color: '#ffffff',
+                  fontSize: 14,
+                  fontWeight: 700,
+                  height: 24,
+                  borderRadius: 1,
+                  '& .MuiChip-icon': {
+                    color: '#ffffff',
+                    ml: 0.25, // 2px left padding
+                    fontSize: 16,
+                  },
+                  '& .MuiChip-label': { 
+                    px: 0.5, // 6px horizontal padding
+                    py: 0.375, // 3px vertical padding
+                    pl: 0.25, // 2px additional left padding for text
+                    fontSize: 14,
+                    fontWeight: 700,
+                    lineHeight: 1.43,
+                    letterSpacing: '0.17px',
+                    fontFamily: 'Roboto, sans-serif',
+                  },
+                }}
+              />
+            </Box>
+          </Box>
+          {/* Description */}
+          <Typography
+            sx={{
+              fontSize: 14,
+              fontWeight: 400,
+              color: '#b6bab1',
+              lineHeight: 1.43,
+              letterSpacing: '0.17px',
+              maxHeight: 54,
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              fontFamily: 'Roboto, sans-serif',
+              width: '100%',
+            }}
+          >
+            {description}
+          </Typography>
+        </Box>
+
+        {/* Right Side - File Upload Info */}
+        <Box 
+          sx={{ 
+            display: 'flex',
+            gap: 1, // 8px
+            alignItems: 'flex-start',
+            justifyContent: 'flex-end',
+            flexShrink: 0,
+            width: 320,
+          }}
+        >
+          {/* File Cloud Icon Container */}
+          <Box 
+            sx={{ 
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              flexShrink: 0,
+            }}
+          >
+            <Box sx={{ width: 20, height: 20, flexShrink: 0 }}>
+              <CloudUpload sx={{ fontSize: 20, width: 20, height: 20, color: '#ffffff' }} />
+            </Box>
+            <IconButton
+              size="small"
+              sx={{
+                color: '#ffffff',
+                width: 20,
+                height: 20,
+                p: 0.625, // 5px
+                borderRadius: '50%',
+                mt: 0.5,
+                '&:hover': { bgcolor: 'rgba(255, 255, 255, 0.1)' },
+              }}
+            >
+              <History sx={{ fontSize: 14 }} />
+            </IconButton>
+          </Box>
+
+          {/* File Info */}
+          <Box 
+            sx={{ 
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 1, // 8px
+              alignItems: 'flex-end',
+              flexShrink: 0,
+            }}
+          >
+            {/* File Name and Version */}
+            <Box 
+              sx={{ 
+                display: 'flex',
+                gap: 1, // 8px
+                alignItems: 'flex-start',
+                flexShrink: 0,
+              }}
+            >
+              <Typography
+                component="a"
+                href={fileUrl}
+                sx={{
+                  fontSize: 14,
+                  fontWeight: 400,
+                  color: '#ffffff',
+                  lineHeight: 1.43,
+                  letterSpacing: '0.17px',
+                  textDecoration: 'underline',
+                  textUnderlinePosition: 'from-font',
+                  fontFamily: 'Roboto, sans-serif',
+                  whiteSpace: 'nowrap',
+                  flexShrink: 0,
+                  cursor: 'pointer',
+                  '&:hover': {
+                    color: '#44c571',
+                  },
+                }}
+              >
+                Product_template.csv
+              </Typography>
+              <Box 
+                sx={{ 
+                  display: 'flex',
+                  gap: 0.25, // 2px
+                  alignItems: 'center',
+                  flexShrink: 0,
+                }}
+              >
+                <Typography
+                  sx={{
+                    fontSize: 14,
+                    fontWeight: 400,
+                    color: '#b6bab1',
+                    lineHeight: 1.43,
+                    letterSpacing: '0.17px',
+                    fontFamily: 'Roboto, sans-serif',
+                    whiteSpace: 'nowrap',
+                    flexShrink: 0,
+                  }}
+                >
+                  {version}
+                </Typography>
+                <Box 
+                  sx={{ 
+                    display: 'flex',
+                    gap: 1.25, // 10px
+                    height: 20,
+                    alignItems: 'center',
+                    flexShrink: 0,
+                  }}
+                >
+                  <IconButton
+                    size="small"
+                    sx={{
+                      color: '#ffffff',
+                      width: 20,
+                      height: 20,
+                      p: 0.625, // 5px
+                      borderRadius: '50%',
+                      '&:hover': { bgcolor: 'rgba(255, 255, 255, 0.1)' },
+                    }}
+                  >
+                    <History sx={{ fontSize: 14 }} />
+                  </IconButton>
+                </Box>
+              </Box>
+            </Box>
+            {/* Upload Date */}
+            <Box 
+              sx={{ 
+                display: 'flex',
+                gap: 0.5, // 4px
+                alignItems: 'center',
+                width: '100%',
+              }}
+            >
+              <Typography
+                sx={{
+                  fontSize: 14,
+                  fontWeight: 400,
+                  color: '#b6bab1',
+                  lineHeight: 1.43,
+                  letterSpacing: '0.17px',
+                  fontFamily: 'Roboto, sans-serif',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                {uploadDate}
+              </Typography>
+            </Box>
+          </Box>
+        </Box>
+      </Box>
     </Box>
   )
 }
@@ -673,6 +979,33 @@ export function Phase1Content() {
     },
   ]
 
+  const uploadedFiles: FileUploadRowProps[] = [
+    {
+      fileName: 'Non-Food Product',
+      category: 'Non-Food Products',
+      description: 'All of the non-food items, except farm equipments',
+      fileUrl: '#',
+      version: 'v45',
+      uploadDate: 'On Jan 11, 2025',
+    },
+    {
+      fileName: 'Food Products',
+      category: 'Food Products',
+      description: 'All food-related items and ingredients',
+      fileUrl: '#',
+      version: 'v45',
+      uploadDate: 'On Jan 11, 2025',
+    },
+    {
+      fileName: 'Raw Materials',
+      category: 'Raw Materials',
+      description: 'Primary materials and components',
+      fileUrl: '#',
+      version: 'v45',
+      uploadDate: 'On Jan 11, 2025',
+    },
+  ]
+
   return (
     <Box
       sx={{
@@ -829,7 +1162,13 @@ export function Phase1Content() {
             label="Files Upload"
             title="You've uploaded 3 Files"
             description="This is for creating your scope 3.1"
-          />
+          >
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, width: '100%' }}>
+              {uploadedFiles.map((file, index) => (
+                <FileUploadRow key={index} {...file} />
+              ))}
+            </Box>
+          </ActivityConfigCard>
 
           {/* Data Quality Review Card */}
           <ActivityConfigCard
