@@ -50,42 +50,15 @@ interface ConversationalAIProps {
   onGoalSelected?: () => void
 }
 
-// Green Logo Component - pixelated arrow/triangle pointing right
+// Green Logo Component - using PNG image
 const GreenLogo = ({ size = 24 }: { size?: number }) => (
-  <svg
+  <img
+    src="/logo.png"
+    alt="CO2 AI Logo"
     width={size}
     height={size}
-    viewBox="0 0 24 24"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    {/* Main green arrow shape - pixelated style using rectangles for pixel art effect */}
-    {/* Left vertical edge */}
-    <rect x="2" y="4" width="2" height="16" fill="#44c571" />
-    {/* Expanding middle sections */}
-    <rect x="4" y="6" width="2" height="12" fill="#44c571" />
-    <rect x="6" y="7" width="2" height="10" fill="#44c571" />
-    <rect x="8" y="8" width="2" height="8" fill="#44c571" />
-    <rect x="10" y="9" width="2" height="6" fill="#44c571" />
-    <rect x="12" y="10" width="2" height="4" fill="#44c571" />
-    {/* Right point */}
-    <rect x="14" y="11" width="2" height="2" fill="#44c571" />
-    <rect x="16" y="11.5" width="1" height="1" fill="#44c571" />
-    
-    {/* Left edge square cutouts (3 vertical squares) */}
-    <rect x="2" y="5" width="2" height="2" fill="#000000" />
-    <rect x="2" y="9" width="2" height="2" fill="#000000" />
-    <rect x="2" y="13" width="2" height="2" fill="#000000" />
-    
-    {/* Center triangular cutouts (3 triangles pointing up) */}
-    <path d="M6 9 L8 9 L7 7 Z" fill="#000000" />
-    <path d="M10 11 L12 11 L11 9 Z" fill="#000000" />
-    <path d="M8 15 L10 15 L9 13 Z" fill="#000000" />
-    
-    {/* Right edge square cutouts (2 squares) */}
-    <rect x="14" y="7" width="2" height="2" fill="#000000" />
-    <rect x="14" y="15" width="2" height="2" fill="#000000" />
-  </svg>
+    style={{ display: 'block' }}
+  />
 )
 
 interface ChatHistory {
