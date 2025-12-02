@@ -114,8 +114,13 @@ function VerticalStepper() {
                       fontFamily: 'Roboto, sans-serif',
                       letterSpacing: '0.4px',
                       textAlign: 'center',
-                      display: 'block',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
                       width: '100%',
+                      height: '100%',
+                      margin: 0,
+                      padding: 0,
                     }}
                   >
                     {step.id}
@@ -150,22 +155,22 @@ function VerticalStepper() {
               sx={{
                 display: 'flex',
                 alignItems: 'stretch',
-                justifyContent: 'center',
                 width: '100%',
                 height: 8, // Exactly 8px height
-                paddingLeft: 1.5, // 12px left padding to center line in 24px icon
-                paddingRight: 1.5, // 12px right padding
                 paddingTop: 0,
                 paddingBottom: 0,
                 boxSizing: 'border-box',
+                position: 'relative',
               }}
             >
+              {/* Center the 1px line in the 24px icon area: (24 - 1) / 2 = 11.5px */}
               <Box
                 sx={{
                   width: 1, // 1px width
                   height: '100%',
                   bgcolor: '#554b55',
-                  flexShrink: 0,
+                  position: 'absolute',
+                  left: '11.5px', // Perfectly centered: (24 - 1) / 2
                 }}
               />
             </Box>
