@@ -50,8 +50,8 @@ interface ConversationalAIProps {
   onGoalSelected?: () => void
 }
 
-// Purple Logo Component based on Figma design
-const PurpleLogo = ({ size = 24, id = 'purpleGrad' }: { size?: number; id?: string }) => (
+// Green Logo Component - pixelated arrow/triangle pointing right
+const GreenLogo = ({ size = 24 }: { size?: number }) => (
   <svg
     width={size}
     height={size}
@@ -59,43 +59,32 @@ const PurpleLogo = ({ size = 24, id = 'purpleGrad' }: { size?: number; id?: stri
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <defs>
-      <linearGradient id={id} x1="0%" y1="0%" x2="0%" y2="100%">
-        <stop offset="0%" style={{ stopColor: '#A855F7', stopOpacity: 1 }} />
-        <stop offset="100%" style={{ stopColor: '#7C3AED', stopOpacity: 1 }} />
-      </linearGradient>
-    </defs>
-    {/* Left infinity symbol */}
-    <path
-      d="M6 8C6 6.9 6.9 6 8 6H10C11.1 6 12 6.9 12 8V10C12 11.1 11.1 12 10 12H8C6.9 12 6 11.1 6 10V8Z"
-      fill={`url(#${id})`}
-    />
-    <path
-      d="M6 14C6 12.9 6.9 12 8 12H10C11.1 12 12 12.9 12 14V16C12 17.1 11.1 18 10 18H8C6.9 18 6 17.1 6 16V14Z"
-      fill={`url(#${id})`}
-    />
-    <path
-      d="M8 10C8 9.45 8.45 9 9 9H11C11.55 9 12 9.45 12 10V14C12 14.55 11.55 15 11 15H9C8.45 15 8 14.55 8 14V10Z"
-      fill={`url(#${id})`}
-      opacity="0.8"
-    />
-    {/* Middle infinity symbol */}
-    <path
-      d="M10 8C10 6.9 10.9 6 12 6H14C15.1 6 16 6.9 16 8V10C16 11.1 15.1 12 14 12H12C10.9 12 10 11.1 10 10V8Z"
-      fill={`url(#${id})`}
-    />
-    <path
-      d="M10 14C10 12.9 10.9 12 12 12H14C15.1 12 16 12.9 16 14V16C16 17.1 15.1 18 14 18H12C10.9 18 10 17.1 10 16V14Z"
-      fill={`url(#${id})`}
-    />
-    <path
-      d="M12 10C12 9.45 12.45 9 13 9H15C15.55 9 16 9.45 16 10V14C16 14.55 15.55 15 15 15H13C12.45 15 12 14.55 12 14V10Z"
-      fill={`url(#${id})`}
-      opacity="0.8"
-    />
-    {/* Right circles */}
-    <circle cx="18" cy="9" r="2.5" fill={`url(#${id})`} />
-    <circle cx="18" cy="15" r="2.5" fill={`url(#${id})`} />
+    {/* Main green arrow shape - pixelated style using rectangles for pixel art effect */}
+    {/* Left vertical edge */}
+    <rect x="2" y="4" width="2" height="16" fill="#44c571" />
+    {/* Expanding middle sections */}
+    <rect x="4" y="6" width="2" height="12" fill="#44c571" />
+    <rect x="6" y="7" width="2" height="10" fill="#44c571" />
+    <rect x="8" y="8" width="2" height="8" fill="#44c571" />
+    <rect x="10" y="9" width="2" height="6" fill="#44c571" />
+    <rect x="12" y="10" width="2" height="4" fill="#44c571" />
+    {/* Right point */}
+    <rect x="14" y="11" width="2" height="2" fill="#44c571" />
+    <rect x="16" y="11.5" width="1" height="1" fill="#44c571" />
+    
+    {/* Left edge square cutouts (3 vertical squares) */}
+    <rect x="2" y="5" width="2" height="2" fill="#000000" />
+    <rect x="2" y="9" width="2" height="2" fill="#000000" />
+    <rect x="2" y="13" width="2" height="2" fill="#000000" />
+    
+    {/* Center triangular cutouts (3 triangles pointing up) */}
+    <path d="M6 9 L8 9 L7 7 Z" fill="#000000" />
+    <path d="M10 11 L12 11 L11 9 Z" fill="#000000" />
+    <path d="M8 15 L10 15 L9 13 Z" fill="#000000" />
+    
+    {/* Right edge square cutouts (2 squares) */}
+    <rect x="14" y="7" width="2" height="2" fill="#000000" />
+    <rect x="14" y="15" width="2" height="2" fill="#000000" />
   </svg>
 )
 
@@ -535,7 +524,7 @@ export function ConversationalAI({ width = 374, onAnalysisComplete, onGoalSelect
             <Box key={msg.id} sx={{ alignSelf: msg.role === 'user' ? 'flex-end' : 'flex-start', maxWidth: '85%' }}>
                 {msg.role === 'assistant' && (
                     <Box sx={{ display: 'flex', gap: 1, mb: 0.5 }}>
-                        <PurpleLogo size={20} />
+                        <GreenLogo size={20} />
                         <Typography sx={{ color: '#fff', fontSize: 12, fontWeight: 600 }}>CO2 AI</Typography>
                     </Box>
                 )}
@@ -834,7 +823,7 @@ export function ConversationalAI({ width = 374, onAnalysisComplete, onGoalSelect
         ))}
         {isLoading && (
             <Box sx={{ display: 'flex', gap: 1 }}>
-                <PurpleLogo size={20} />
+                <GreenLogo size={20} />
                 <Typography sx={{ color: '#b6bab1', fontStyle: 'italic' }}>Thinking...</Typography>
             </Box>
         )}
