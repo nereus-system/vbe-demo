@@ -227,28 +227,16 @@ export function ConversationalAI({ width = 374, onAnalysisComplete, onGoalSelect
       onGoalSelected()
     }
     
-    const userMessage: Message = {
-      id: `user-${Date.now()}`,
-      role: 'user',
-      content: goalType === 'Scope 3.1' ? 'a) Scope 3.1 footprint' : goalType === 'PCFs' ? 'b) PCFs' : 'c) Supplier Engagement',
-    }
-    setMessages((prev) => [...prev, userMessage])
+    const userContent = goalType === 'Scope 3.1' ? 'Scope 3.1 footprint' : goalType === 'PCFs' ? 'PCFs' : 'Supplier Engagement'
     
     // Send to OpenAI to continue the structured flow (this will trigger the year question)
-    await sendMessage(userMessage.content)
+    await sendMessage(userContent)
   }
 
   // Handle year selection - sends message to OpenAI and continues structured flow
   const handleYearSelect = async (year: string) => {
     setGoal((prev) => ({ ...prev, period: year }))
     setFlowStep('phase1_prior_experience') // Move to next step
-    
-    const userMessage: Message = {
-      id: `user-${Date.now()}`,
-      role: 'user',
-      content: year,
-    }
-    setMessages((prev) => [...prev, userMessage])
     
     // Send to OpenAI to continue the structured flow
     await sendMessage(year)
@@ -257,14 +245,7 @@ export function ConversationalAI({ width = 374, onAnalysisComplete, onGoalSelect
   // Handle Prior Experience Selection (Step 3)
   const handlePriorExperienceSelect = async (hasExperience: boolean) => {
     setFlowStep('phase1_recommend_files')
-    const content = hasExperience ? 'a) Yes' : 'b) No'
-    
-    const userMessage: Message = {
-      id: `user-${Date.now()}`,
-      role: 'user',
-      content: content,
-    }
-    setMessages((prev) => [...prev, userMessage])
+    const content = hasExperience ? 'Yes' : 'No'
     await sendMessage(content)
   }
 
@@ -272,57 +253,27 @@ export function ConversationalAI({ width = 374, onAnalysisComplete, onGoalSelect
   const handleRecommendFilesAction = async (action: 'download' | 'upload') => {
     setFlowStep('phase1_collaborators')
     const content = action === 'download' ? 'Download templates' : 'Upload your own files'
-    
-    // If download, we might simulate a download action here
-    
-    const userMessage: Message = {
-      id: `user-${Date.now()}`,
-      role: 'user',
-      content: content,
-    }
-    setMessages((prev) => [...prev, userMessage])
     await sendMessage(content)
   }
 
   // Handle Collaborators Selection (Step 5)
   const handleCollaboratorsSelect = async (needsHelp: boolean) => {
     setFlowStep('phase1_file_upload')
-    const content = needsHelp ? 'a) Yes' : 'b) No'
-    
-    const userMessage: Message = {
-      id: `user-${Date.now()}`,
-      role: 'user',
-      content: content,
-    }
-    setMessages((prev) => [...prev, userMessage])
+    const content = needsHelp ? 'Yes' : 'No'
     await sendMessage(content)
   }
 
   // Handle Year Consistency Check (Step 7)
   const handleYearConsistencySelect = async (excludePrevious: boolean) => {
     setFlowStep('phase1_data_analysis')
-    const content = excludePrevious ? 'a) Yes, exclude previous years' : 'b) No, keep them for context'
-    
-    const userMessage: Message = {
-      id: `user-${Date.now()}`,
-      role: 'user',
-      content: content,
-    }
-    setMessages((prev) => [...prev, userMessage])
+    const content = excludePrevious ? 'Yes, exclude previous years' : 'No, keep them for context'
     await sendMessage(content)
   }
 
   // Handle Data Analysis Action (Step 8)
   const handleDataAnalysisAction = async (action: 'review' | 'correct') => {
     setFlowStep('phase1_additional_files')
-    const content = action === 'review' ? '1) Review issues now' : '2) Correct or validate directly'
-    
-    const userMessage: Message = {
-      id: `user-${Date.now()}`,
-      role: 'user',
-      content: content,
-    }
-    setMessages((prev) => [...prev, userMessage])
+    const content = action === 'review' ? 'Review issues now' : 'Correct or validate directly'
     await sendMessage(content)
   }
 
@@ -330,27 +281,13 @@ export function ConversationalAI({ width = 374, onAnalysisComplete, onGoalSelect
   const handleAdditionalFilesAction = async (action: 'add' | 'skip') => {
     setFlowStep('phase1_data_validation')
     const content = action === 'add' ? 'Add more files now' : 'Skip this step'
-    
-    const userMessage: Message = {
-      id: `user-${Date.now()}`,
-      role: 'user',
-      content: content,
-    }
-    setMessages((prev) => [...prev, userMessage])
     await sendMessage(content)
   }
 
   // Handle Data Validation (Step 10)
   const handleDataValidationAction = async (action: 'validate' | 'correct') => {
     setFlowStep(action === 'validate' ? 'phase1_move_to_standardisation' : 'phase1_data_validation') // Stay if correcting
-    const content = action === 'validate' ? 'a) Yes, validate' : 'b) No, correct more data'
-    
-    const userMessage: Message = {
-      id: `user-${Date.now()}`,
-      role: 'user',
-      content: content,
-    }
-    setMessages((prev) => [...prev, userMessage])
+    const content = action === 'validate' ? 'Yes, validate' : 'No, correct more data'
     await sendMessage(content)
   }
   
@@ -358,14 +295,7 @@ export function ConversationalAI({ width = 374, onAnalysisComplete, onGoalSelect
   const handleMissingBuBrandSelect = async (addNow: boolean) => {
     // Assuming next step is mapping review or similar based on previous code
     setFlowStep('phase2_mapping_review') 
-    const content = addNow ? 'a) Yes' : 'b) No'
-    
-    const userMessage: Message = {
-      id: `user-${Date.now()}`,
-      role: 'user',
-      content: content,
-    }
-    setMessages((prev) => [...prev, userMessage])
+    const content = addNow ? 'Yes' : 'No'
     await sendMessage(content)
   }
 
@@ -1404,9 +1334,9 @@ Please analyze this dataset and proceed with the schema inference.`
                         <Box sx={{ display: 'flex', flexDirection: 'column', gap: '12px', mt: 2, width: '100%' }}>
                           <Stack direction="column" spacing={1} sx={{ width: '100%' }}>
                             {([
-                              { label: 'a) Scope 3.1 footprint', value: 'Scope 3.1' as const },
-                              { label: 'b) PCFs', value: 'PCFs' as const },
-                              { label: 'c) Supplier Engagement', value: 'Supplier Engagement' as const },
+                              { label: 'Scope 3.1 footprint', value: 'Scope 3.1' as const },
+                              { label: 'PCFs', value: 'PCFs' as const },
+                              { label: 'Supplier Engagement', value: 'Supplier Engagement' as const },
                             ]).map((option) => (
                               <Button
                                 key={option.value}
@@ -1522,14 +1452,14 @@ Please analyze this dataset and proceed with the schema inference.`
                             onClick={() => handlePriorExperienceSelect(true)}
                             sx={{ borderColor: '#44c571', color: '#44c571', textTransform: 'none' }}
                           >
-                            a) Yes
+                            Yes
                           </Button>
                           <Button
                             variant="outlined"
                             onClick={() => handlePriorExperienceSelect(false)}
                             sx={{ borderColor: '#44c571', color: '#44c571', textTransform: 'none' }}
                           >
-                            b) No
+                            No
                           </Button>
                         </Box>
                       )}
@@ -1562,14 +1492,14 @@ Please analyze this dataset and proceed with the schema inference.`
                             onClick={() => handleCollaboratorsSelect(true)}
                             sx={{ borderColor: '#44c571', color: '#44c571', textTransform: 'none' }}
                           >
-                            a) Yes
+                            Yes
                           </Button>
                           <Button
                             variant="outlined"
                             onClick={() => handleCollaboratorsSelect(false)}
                             sx={{ borderColor: '#44c571', color: '#44c571', textTransform: 'none' }}
                           >
-                            b) No
+                            No
                           </Button>
                         </Box>
                       )}
@@ -1635,14 +1565,14 @@ Please analyze this dataset and proceed with the schema inference.`
                             onClick={() => handleYearConsistencySelect(true)}
                             sx={{ borderColor: '#44c571', color: '#44c571', textTransform: 'none', justifyContent: 'flex-start' }}
                           >
-                            a) Yes, exclude previous years
+                            Yes, exclude previous years
                           </Button>
                           <Button
                             variant="outlined"
                             onClick={() => handleYearConsistencySelect(false)}
                             sx={{ borderColor: '#44c571', color: '#44c571', textTransform: 'none', justifyContent: 'flex-start' }}
                           >
-                            b) No, keep them for context
+                            No, keep them for context
                           </Button>
                         </Box>
                       )}
@@ -1655,14 +1585,14 @@ Please analyze this dataset and proceed with the schema inference.`
                             onClick={() => handleDataAnalysisAction('review')}
                             sx={{ borderColor: '#44c571', color: '#44c571', textTransform: 'none', justifyContent: 'flex-start' }}
                           >
-                            1) Review issues now
+                            Review issues now
                           </Button>
                           <Button
                             variant="outlined"
                             onClick={() => handleDataAnalysisAction('correct')}
                             sx={{ borderColor: '#44c571', color: '#44c571', textTransform: 'none', justifyContent: 'flex-start' }}
                           >
-                            2) Correct or validate directly
+                            Correct or validate directly
                           </Button>
                         </Box>
                       )}
@@ -1700,14 +1630,14 @@ Please analyze this dataset and proceed with the schema inference.`
                               '&:hover': { backgroundColor: '#3db362' },
                             }}
                           >
-                            a) Yes, validate
+                            Yes, validate
                           </Button>
                           <Button
                             variant="outlined"
                             onClick={() => handleDataValidationAction('correct')}
                             sx={{ borderColor: '#44c571', color: '#44c571', textTransform: 'none' }}
                           >
-                            b) No, correct more data
+                            No, correct more data
                           </Button>
                         </Box>
                       )}
@@ -1720,14 +1650,14 @@ Please analyze this dataset and proceed with the schema inference.`
                             onClick={() => handleMissingBuBrandSelect(true)}
                             sx={{ borderColor: '#44c571', color: '#44c571', textTransform: 'none' }}
                           >
-                            a) Yes
+                            Yes
                           </Button>
                           <Button
                             variant="outlined"
                             onClick={() => handleMissingBuBrandSelect(false)}
                             sx={{ borderColor: '#44c571', color: '#44c571', textTransform: 'none' }}
                           >
-                            b) No
+                            No
                           </Button>
                         </Box>
                       )}
