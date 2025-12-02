@@ -192,13 +192,13 @@ export function ConversationalAI({ width = 374, onAnalysisComplete, onGoalSelect
 
   // Step 4 Options Data
   const fileOptions = [
-    { id: 'procurement', label: 'Procurement Data', desc: 'Purchase orders, invoices, transaction records', icon: <Receipt sx={{ fontSize: 20, color: '#2E7D32' }} /> },
-    { id: 'suppliers', label: 'Suppliers List', desc: 'Supplier names, locations, contact info, spend data', icon: <People sx={{ fontSize: 20, color: '#1976D2' }} /> },
-    { id: 'products', label: 'Products Catalog', desc: 'Product names, categories, quantities, materials', icon: <Category sx={{ fontSize: 20, color: '#E65100' }} /> },
-    { id: 'business_units', label: 'Business Units', desc: 'BU hierarchy, departments, cost centers', icon: <Business sx={{ fontSize: 20, color: '#689F38' }} /> },
-    { id: 'sites', label: 'Sites / Locations', desc: 'Facility addresses, geographic data', icon: <LocationOn sx={{ fontSize: 20, color: '#00796B' }} /> },
-    { id: 'spend', label: 'Spend Data', desc: 'Financial records, budgets, cost allocations', icon: <AttachMoney sx={{ fontSize: 20, color: '#C2185B' }} /> },
-    { id: 'other', label: 'Other', desc: 'Add custom document type', icon: <Add sx={{ fontSize: 20, color: '#757575' }} /> },
+    { id: 'procurement', label: 'Procurement Data', desc: 'Purchase orders, invoices, transaction records', icon: <Receipt sx={{ fontSize: 20 }} /> },
+    { id: 'suppliers', label: 'Suppliers List', desc: 'Supplier names, locations, contact info, spend data', icon: <People sx={{ fontSize: 20 }} /> },
+    { id: 'products', label: 'Products Catalog', desc: 'Product names, categories, quantities, materials', icon: <Category sx={{ fontSize: 20 }} /> },
+    { id: 'business_units', label: 'Business Units', desc: 'BU hierarchy, departments, cost centers', icon: <Business sx={{ fontSize: 20 }} /> },
+    { id: 'sites', label: 'Sites / Locations', desc: 'Facility addresses, geographic data', icon: <LocationOn sx={{ fontSize: 20 }} /> },
+    { id: 'spend', label: 'Spend Data', desc: 'Financial records, budgets, cost allocations', icon: <AttachMoney sx={{ fontSize: 20 }} /> },
+    { id: 'other', label: 'Other', desc: 'Add custom document type', icon: <Add sx={{ fontSize: 20 }} /> },
   ]
 
   const scrollToBottom = () => {
@@ -610,27 +610,29 @@ export function ConversationalAI({ width = 374, onAnalysisComplete, onGoalSelect
                                                     display: 'flex',
                                                     flexDirection: 'column',
                                                     p: 2,
-                                                    borderRadius: 3,
-                                                    border: `1px solid ${isSelected ? '#A855F7' : '#3d3744'}`,
-                                                    bgcolor: isSelected ? 'rgba(168, 85, 247, 0.04)' : 'transparent',
+                                                    borderRadius: 1,
+                                                    border: `1px solid ${isSelected ? '#44c571' : '#3d3744'}`,
+                                                    bgcolor: isSelected ? 'rgba(68, 197, 113, 0.04)' : 'transparent',
                                                     cursor: 'pointer',
                                                     transition: 'all 0.2s',
                                                     '&:hover': {
-                                                        borderColor: isSelected ? '#A855F7' : '#554b55',
-                                                        bgcolor: isSelected ? 'rgba(168, 85, 247, 0.08)' : 'rgba(255,255,255,0.02)'
+                                                        borderColor: isSelected ? '#44c571' : '#554b55',
+                                                        bgcolor: isSelected ? 'rgba(68, 197, 113, 0.08)' : 'rgba(255,255,255,0.02)'
                                                     }
                                                 }}
                                             >
                                                 <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.5 }}>
                                                     {/* Selection Icon */}
-                                                    <Box sx={{ color: isSelected ? '#A855F7' : '#73696d', display: 'flex', alignItems: 'center', mt: 0.5 }}>
+                                                    <Box sx={{ color: isSelected ? '#44c571' : '#73696d', display: 'flex', alignItems: 'center', mt: 0.5 }}>
                                                         {isSelected ? <CheckCircle sx={{ fontSize: 22 }} /> : <RadioButtonUnchecked sx={{ fontSize: 22 }} />}
                                                     </Box>
                                                     
                                                     {/* Content */}
                                                     <Box sx={{ flex: 1 }}>
                                                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
-                                                            {opt.icon}
+                                                            <Box sx={{ color: isSelected ? '#44c571' : '#b6bab1', display: 'flex', alignItems: 'center' }}>
+                                                                {opt.icon}
+                                                            </Box>
                                                             <Typography sx={{ color: '#fff', fontSize: 14, fontWeight: 500 }}>{opt.label}</Typography>
                                                         </Box>
                                                         <Typography sx={{ color: '#b6bab1', fontSize: 12, lineHeight: 1.4 }}>{opt.desc}</Typography>
@@ -654,7 +656,7 @@ export function ConversationalAI({ width = 374, onAnalysisComplete, onGoalSelect
                                                                     fontSize: 13,
                                                                     '& fieldset': { borderColor: '#3d3744' },
                                                                     '&:hover fieldset': { borderColor: '#554b55' },
-                                                                    '&.Mui-focused fieldset': { borderColor: '#A855F7' }
+                                                                    '&.Mui-focused fieldset': { borderColor: '#44c571' }
                                                                 },
                                                                 '& input::placeholder': { color: '#73696d' }
                                                             }}
@@ -672,16 +674,14 @@ export function ConversationalAI({ width = 374, onAnalysisComplete, onGoalSelect
                                     onClick={handleStep4Continue}
                                     sx={{ 
                                         mt: 2,
-                                        // Branding is purple (#A855F7). I will use purple gradient.
-                                        background: 'linear-gradient(90deg, #A855F7 0%, #7C3AED 100%)',
+                                        bgcolor: '#44c571',
                                         textTransform: 'none',
                                         fontSize: 14,
                                         fontWeight: 600,
                                         py: 1.5,
-                                        borderRadius: 2,
-                                        boxShadow: '0 4px 12px rgba(124, 58, 237, 0.25)',
+                                        borderRadius: 1,
                                         '&:hover': {
-                                            background: 'linear-gradient(90deg, #9333EA 0%, #6D28D9 100%)',
+                                            bgcolor: '#3db362',
                                         }
                                     }}
                                     endIcon={<ChevronRight />}
