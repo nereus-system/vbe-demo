@@ -54,7 +54,7 @@ interface ConversationalAIProps {
 const GreenLogo = ({ size = 24 }: { size?: number }) => (
   <img
     src="/logo-png.png"
-    alt="CO2 AI Logo"
+    alt="Gaia Assistant Logo"
     width={size}
     height={size}
     style={{ display: 'block' }}
@@ -185,7 +185,7 @@ export function ConversationalAI({ width = 374, onAnalysisComplete, onGoalSelect
       const welcomeMessage: Message = {
         id: `assistant-${Date.now()}`,
         role: 'assistant',
-        content: '**Welcome to CO2 AI!**\n\nI\'m here to help you compute your carbon footprint.\n\nWhich footprint do you want to build?',
+        content: '**Welcome to Gaia Assistant!**\n\nI\'m here to help you compute your carbon footprint.\n\nWhich footprint do you want to build?',
       }
       setMessages([welcomeMessage])
       setFlowStep('phase1_step1_select_footprint')
@@ -498,7 +498,7 @@ export function ConversationalAI({ width = 374, onAnalysisComplete, onGoalSelect
                 {msg.role === 'assistant' && (
                     <Box sx={{ display: 'flex', gap: 1, mb: 0.5 }}>
                         <GreenLogo size={20} />
-                        <Typography sx={{ color: '#fff', fontSize: 12, fontWeight: 600 }}>CO2 AI</Typography>
+                        <Typography sx={{ color: '#fff', fontSize: 12, fontWeight: 600 }}>Gaia Assistant</Typography>
                     </Box>
                 )}
                 <Box sx={{ 

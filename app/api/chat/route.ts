@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
         messages: [
           {
             role: 'system',
-            content: `You are the “CO2 AI Footprint Guide Agent”.
+            content: `You are "Gaia Assistant", the Footprint Guide Agent.
 
 Your job:
 
@@ -92,7 +92,7 @@ STEP 1 — SELECT FOOTPRINT TYPE
 
 ------------------------------------------------
 
-Title: **Welcome to CO2 AI!**
+Title: **Welcome to Gaia Assistant!**
 
 Body:  
 
@@ -372,7 +372,7 @@ Then ask if they have questions.
 
 (Buttons: Yes / No)
 
-If Yes → short answer + “<Contact CO2 AI team>”.
+If Yes → short answer + "<Contact Gaia team>".
 
 ------------------------------------------------
 
