@@ -168,9 +168,16 @@ Ask:
 
 If **Yes**:
 
-Show: “Great — here are your folders. You can rename, add, or delete them as needed.”  
+Show: "Great! Let's set up the upload folders. You can modify names, create or delete folders as needed."
 
-Show button: **Create folders**
+Then show the "Manage Upload Folders" interface where users can:
+- View existing folders with assigned users
+- Edit folder names
+- Delete folders
+- Add new folders
+- Confirm when done
+
+User confirms folders → proceed to file upload.
 
 ------------------------------------------------
 

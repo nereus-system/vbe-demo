@@ -41,7 +41,11 @@ import {
   Business,
   LocationOn,
   AttachMoney,
-  Description
+  Description,
+  Folder,
+  Edit,
+  Delete,
+  Check
 } from '@mui/icons-material'
 
 interface ConversationalAIProps {
@@ -143,6 +147,12 @@ export function ConversationalAI({ width = 374, onAnalysisComplete, onGoalSelect
   const [selectedFileTypes, setSelectedFileTypes] = useState<string[]>(['procurement', 'suppliers'])
   const [otherFileDescription, setOtherFileDescription] = useState('')
   
+  // Folder management state
+  const [folders, setFolders] = useState<Array<{id: string, name: string, assignedUser: string | null}>>([])
+  const [editingFolderId, setEditingFolderId] = useState<string | null>(null)
+  const [editingFolderName, setEditingFolderName] = useState('')
+  const [showFolderManagement, setShowFolderManagement] = useState(false)
+  
   const flowStartedRef = useRef(false)
   
   const abortControllerRef = useRef<AbortController | null>(null)
@@ -235,8 +245,61 @@ export function ConversationalAI({ width = 374, onAnalysisComplete, onGoalSelect
 
   // Step 5: Collaborators
   const handleStep5Select = async (response: string) => {
+    if (response === 'Yes, create folders') {
+      setShowFolderManagement(true)
+      // Initialize with default folders if empty
+      if (folders.length === 0) {
+        setFolders([
+          { id: '1', name: 'Procurement Team', assignedUser: 'john' },
+          { id: '2', name: 'Finance Team', assignedUser: 'sarah' },
+          { id: '3', name: 'Folder 3', assignedUser: null }
+        ])
+      }
+      await sendMessage(response)
+    } else {
+      setFlowStep('phase1_step6_file_upload_description')
+      await sendMessage(response)
+    }
+  }
+
+  // Folder management handlers
+  const handleAddFolder = () => {
+    const newId = `folder-${Date.now()}`
+    setFolders([...folders, { id: newId, name: `Folder ${folders.length + 1}`, assignedUser: null }])
+    setEditingFolderId(newId)
+    setEditingFolderName(`Folder ${folders.length + 1}`)
+  }
+
+  const handleEditFolder = (folderId: string) => {
+    const folder = folders.find(f => f.id === folderId)
+    if (folder) {
+      setEditingFolderId(folderId)
+      setEditingFolderName(folder.name)
+    }
+  }
+
+  const handleSaveFolderEdit = () => {
+    if (editingFolderId && editingFolderName.trim()) {
+      setFolders(folders.map(f => 
+        f.id === editingFolderId ? { ...f, name: editingFolderName.trim() } : f
+      ))
+      setEditingFolderId(null)
+      setEditingFolderName('')
+    }
+  }
+
+  const handleDeleteFolder = (folderId: string) => {
+    setFolders(folders.filter(f => f.id !== folderId))
+    if (editingFolderId === folderId) {
+      setEditingFolderId(null)
+      setEditingFolderName('')
+    }
+  }
+
+  const handleConfirmFolders = async () => {
+    setShowFolderManagement(false)
     setFlowStep('phase1_step6_file_upload_description')
-    await sendMessage(response)
+    await sendMessage(`I've confirmed ${folders.length} folder(s)`)
   }
 
   // Step 6: File Upload -> Handled by handleFileUpload
@@ -636,11 +699,171 @@ export function ConversationalAI({ width = 374, onAnalysisComplete, onGoalSelect
                         )}
 
                         {/* Step 5 */}
-                        {flowStep === 'phase1_step5_collaborator_support' && (
+                        {flowStep === 'phase1_step5_collaborator_support' && !showFolderManagement && (
                             <>
                                 <Button variant="outlined" onClick={() => handleStep5Select('Yes, create folders')} sx={{ color: '#44c571', borderColor: '#44c571', textTransform: 'none' }}>Yes, create folders</Button>
-                                <Button variant="outlined" onClick={() => handleStep5Select('No, I’ll upload everything')} sx={{ color: '#44c571', borderColor: '#44c571', textTransform: 'none' }}>No, I’ll upload everything</Button>
+                                <Button variant="outlined" onClick={() => handleStep5Select("No, I'll upload everything")} sx={{ color: '#44c571', borderColor: '#44c571', textTransform: 'none' }}>No, I'll upload everything</Button>
                             </>
+                        )}
+
+                        {/* Step 5: Folder Management UI */}
+                        {flowStep === 'phase1_step5_collaborator_support' && showFolderManagement && (
+                            <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
+                                <Typography sx={{ color: '#fff', fontSize: 16, fontWeight: 600, mb: 1 }}>
+                                    Manage Upload Folders
+                                </Typography>
+                                
+                                <Stack spacing={1.5} sx={{ width: '100%' }}>
+                                    {folders.map((folder) => (
+                                        <Box
+                                            key={folder.id}
+                                            sx={{
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                gap: 1.5,
+                                                p: 1.5,
+                                                borderRadius: 1,
+                                                bgcolor: 'rgba(255, 255, 255, 0.05)',
+                                                border: '1px solid #3d3744',
+                                                transition: 'all 0.2s',
+                                                '&:hover': {
+                                                    bgcolor: 'rgba(255, 255, 255, 0.08)',
+                                                    borderColor: '#554b55'
+                                                }
+                                            }}
+                                        >
+                                            <Folder sx={{ fontSize: 20, color: '#44c571' }} />
+                                            
+                                            {editingFolderId === folder.id ? (
+                                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flex: 1 }}>
+                                                    <TextField
+                                                        size="small"
+                                                        value={editingFolderName}
+                                                        onChange={(e) => setEditingFolderName(e.target.value)}
+                                                        onKeyDown={(e) => {
+                                                            if (e.key === 'Enter') {
+                                                                handleSaveFolderEdit()
+                                                            } else if (e.key === 'Escape') {
+                                                                setEditingFolderId(null)
+                                                                setEditingFolderName('')
+                                                            }
+                                                        }}
+                                                        autoFocus
+                                                        sx={{
+                                                            flex: 1,
+                                                            '& .MuiOutlinedInput-root': {
+                                                                color: '#fff',
+                                                                fontSize: 14,
+                                                                '& fieldset': { borderColor: '#44c571' },
+                                                                '&:hover fieldset': { borderColor: '#44c571' },
+                                                                '&.Mui-focused fieldset': { borderColor: '#44c571' }
+                                                            }
+                                                        }}
+                                                    />
+                                                    <IconButton
+                                                        size="small"
+                                                        onClick={handleSaveFolderEdit}
+                                                        sx={{ color: '#44c571' }}
+                                                    >
+                                                        <Check sx={{ fontSize: 18 }} />
+                                                    </IconButton>
+                                                    <IconButton
+                                                        size="small"
+                                                        onClick={() => {
+                                                            setEditingFolderId(null)
+                                                            setEditingFolderName('')
+                                                        }}
+                                                        sx={{ color: '#b6bab1' }}
+                                                    >
+                                                        <Close sx={{ fontSize: 18 }} />
+                                                    </IconButton>
+                                                </Box>
+                                            ) : (
+                                                <>
+                                                    <Typography sx={{ color: '#fff', fontSize: 14, flex: 1 }}>
+                                                        {folder.name}
+                                                    </Typography>
+                                                    {folder.assignedUser && (
+                                                        <Chip
+                                                            label={`@${folder.assignedUser}`}
+                                                            size="small"
+                                                            sx={{
+                                                                bgcolor: 'rgba(68, 197, 113, 0.2)',
+                                                                color: '#44c571',
+                                                                fontSize: 12,
+                                                                height: 24,
+                                                                '& .MuiChip-label': { px: 1 }
+                                                            }}
+                                                        />
+                                                    )}
+                                                    <IconButton
+                                                        size="small"
+                                                        onClick={() => handleEditFolder(folder.id)}
+                                                        sx={{ 
+                                                            color: '#b6bab1',
+                                                            '&:hover': { color: '#44c571', bgcolor: 'rgba(68, 197, 113, 0.1)' },
+                                                            transition: 'all 0.2s'
+                                                        }}
+                                                    >
+                                                        <Edit sx={{ fontSize: 18 }} />
+                                                    </IconButton>
+                                                    <IconButton
+                                                        size="small"
+                                                        onClick={() => handleDeleteFolder(folder.id)}
+                                                        sx={{ 
+                                                            color: '#b6bab1',
+                                                            '&:hover': { color: '#ff6b6b', bgcolor: 'rgba(255, 107, 107, 0.1)' },
+                                                            transition: 'all 0.2s'
+                                                        }}
+                                                    >
+                                                        <Delete sx={{ fontSize: 18 }} />
+                                                    </IconButton>
+                                                </>
+                                            )}
+                                        </Box>
+                                    ))}
+                                </Stack>
+
+                                <Box sx={{ display: 'flex', gap: 1.5, mt: 1 }}>
+                                    <Button
+                                        variant="outlined"
+                                        startIcon={
+                                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                                                <Folder sx={{ fontSize: 18 }} />
+                                                <Add sx={{ fontSize: 14 }} />
+                                            </Box>
+                                        }
+                                        onClick={handleAddFolder}
+                                        sx={{
+                                            color: '#44c571',
+                                            borderColor: '#44c571',
+                                            textTransform: 'none',
+                                            '&:hover': {
+                                                borderColor: '#44c571',
+                                                bgcolor: 'rgba(68, 197, 113, 0.1)'
+                                            },
+                                            transition: 'all 0.2s'
+                                        }}
+                                    >
+                                        Add Folder
+                                    </Button>
+                                    <Button
+                                        variant="contained"
+                                        startIcon={<Check sx={{ fontSize: 18 }} />}
+                                        onClick={handleConfirmFolders}
+                                        sx={{
+                                            bgcolor: '#44c571',
+                                            textTransform: 'none',
+                                            '&:hover': {
+                                                bgcolor: '#3db362'
+                                            },
+                                            transition: 'all 0.2s'
+                                        }}
+                                    >
+                                        Confirm
+                                    </Button>
+                                </Box>
+                            </Box>
                         )}
 
                         {/* Step 6 Dropzone Simulated */}
