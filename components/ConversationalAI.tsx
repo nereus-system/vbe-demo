@@ -37,6 +37,7 @@ import {
 interface ConversationalAIProps {
   width?: number | string
   onAnalysisComplete?: () => void
+  onGoalSelected?: () => void
 }
 
 // Purple Logo Component based on Figma design
@@ -103,7 +104,7 @@ interface Message {
   thought?: string
 }
 
-export function ConversationalAI({ width = 374, onAnalysisComplete }: ConversationalAIProps) {
+export function ConversationalAI({ width = 374, onAnalysisComplete, onGoalSelected }: ConversationalAIProps) {
   const [chatTitle, setChatTitle] = useState('New AI chat')
   const [showSuggestions, setShowSuggestions] = useState(false)
   const [chatDropdownAnchor, setChatDropdownAnchor] = useState<null | HTMLElement>(null)
@@ -126,10 +127,18 @@ export function ConversationalAI({ width = 374, onAnalysisComplete }: Conversati
   type FlowStep = 
     | 'welcome' 
     | 'phase1_goal' 
+    | 'phase1_year_selection'
+    | 'phase1_prior_experience'
+    | 'phase1_recommend_files'
+    | 'phase1_collaborators'
     | 'phase1_file_upload'
-    | 'phase1_data_description' 
-    | 'phase1_schema_review' 
-    | 'phase1_cleaning_confirmation'
+    | 'phase1_year_consistency'
+    | 'phase1_data_analysis'
+    | 'phase1_additional_files'
+    | 'phase1_data_validation'
+    | 'phase1_move_to_standardisation'
+    | 'phase2_invisible_transformation'
+    | 'phase2_check_missing_bu_brand'
     | 'phase2_mapping_review'
     | 'phase2_standardisation_confirmation'
     | 'phase3_1_grouping_review'
@@ -142,7 +151,7 @@ export function ConversationalAI({ width = 374, onAnalysisComplete }: Conversati
   const [flowStep, setFlowStep] = useState<FlowStep>('welcome')
   
   // Phase 1 state
-  const [goal, setGoal] = useState<{type: 'PCF' | 'CCF' | null, period: string, businessUnit: string}>({type: null, period: '', businessUnit: ''})
+  const [goal, setGoal] = useState<{type: 'Scope 3.1' | 'PCFs' | 'Supplier Engagement' | null, period: string, businessUnit: string}>({type: null, period: '', businessUnit: ''})
   const [dataDescription, setDataDescription] = useState<string>('')
   const [inferredSchema, setInferredSchema] = useState<any>(null)
   const [uploadedFileInfo, setUploadedFileInfo] = useState<{
@@ -187,7 +196,7 @@ export function ConversationalAI({ width = 374, onAnalysisComplete }: Conversati
     inputRef.current?.focus()
   }, [])
 
-  // Initialize welcome message - Data Ingestion & Activity Creation Agent
+  // Initialize welcome message - CO2 AI Footprint Guide Agent
   useEffect(() => {
     if (flowStartedRef.current) return
     flowStartedRef.current = true
@@ -197,7 +206,7 @@ export function ConversationalAI({ width = 374, onAnalysisComplete }: Conversati
       const welcomeMessage: Message = {
         id: `assistant-${Date.now()}`,
         role: 'assistant',
-        content: 'Hey 👋\n\nI\'m your Data Ingestion & Activity Creation Agent.\n\nI\'ll guide you through turning your procurement and supplier data into clean, standardised, emission-factor matched PCF/CCF activities.\n\nLet\'s start with **Phase 1 — Data Ingestion**.\n\n**What\'s your goal?** Are you building a PCF (Product Carbon Footprint) or CCF (Corporate Carbon Footprint)?',
+        content: 'Welcome to CO2 AI. What footprint do you wish to build?\n\nPlease choose one option:\n\na) Scope 3.1 footprint\n\nb) PCFs\n\nc) Supplier Engagement',
       }
       setMessages([welcomeMessage])
       setFlowStep('phase1_goal')
@@ -208,26 +217,156 @@ export function ConversationalAI({ width = 374, onAnalysisComplete }: Conversati
 
   // ========== PHASE 1 HANDLERS ==========
   
-  // Handle goal selection (PCF or CCF) - sends message to OpenAI and prompts for file upload
-  const handleGoalSelect = async (goalType: 'PCF' | 'CCF', period: string = '2024', businessUnit: string = 'Global') => {
-    setGoal({ type: goalType, period, businessUnit })
-    setFlowStep('phase1_file_upload')
+  // Handle goal selection - sends message to OpenAI and continues structured flow
+  const handleGoalSelect = async (goalType: 'Scope 3.1' | 'PCFs' | 'Supplier Engagement') => {
+    setGoal({ type: goalType, period: '', businessUnit: '' })
+    setFlowStep('phase1_year_selection')
+    
+    // Notify parent that goal was selected (to show Phase 1 content)
+    if (onGoalSelected) {
+      onGoalSelected()
+    }
     
     const userMessage: Message = {
       id: `user-${Date.now()}`,
       role: 'user',
-      content: `${goalType} for ${period} (${businessUnit})`,
+      content: goalType === 'Scope 3.1' ? 'a) Scope 3.1 footprint' : goalType === 'PCFs' ? 'b) PCFs' : 'c) Supplier Engagement',
     }
     setMessages((prev) => [...prev, userMessage])
     
-    // Show file upload prompt
-    await new Promise(resolve => setTimeout(resolve, 500))
-    const uploadPrompt: Message = {
-      id: `assistant-${Date.now()}`,
-      role: 'assistant',
-      content: `Great! Building a **${goalType}** for ${period}.\n\n**Please upload your raw dataset file** (CSV, Excel, or other supported formats) to analyze it.\n\nYou can either:\n- Upload a file using the button below\n- Or describe your data structure if you prefer`,
+    // Send to OpenAI to continue the structured flow (this will trigger the year question)
+    await sendMessage(userMessage.content)
+  }
+
+  // Handle year selection - sends message to OpenAI and continues structured flow
+  const handleYearSelect = async (year: string) => {
+    setGoal((prev) => ({ ...prev, period: year }))
+    setFlowStep('phase1_prior_experience') // Move to next step
+    
+    const userMessage: Message = {
+      id: `user-${Date.now()}`,
+      role: 'user',
+      content: year,
     }
-    setMessages((prev) => [...prev, uploadPrompt])
+    setMessages((prev) => [...prev, userMessage])
+    
+    // Send to OpenAI to continue the structured flow
+    await sendMessage(year)
+  }
+
+  // Handle Prior Experience Selection (Step 3)
+  const handlePriorExperienceSelect = async (hasExperience: boolean) => {
+    setFlowStep('phase1_recommend_files')
+    const content = hasExperience ? 'a) Yes' : 'b) No'
+    
+    const userMessage: Message = {
+      id: `user-${Date.now()}`,
+      role: 'user',
+      content: content,
+    }
+    setMessages((prev) => [...prev, userMessage])
+    await sendMessage(content)
+  }
+
+  // Handle Recommended Files Action (Step 4)
+  const handleRecommendFilesAction = async (action: 'download' | 'upload') => {
+    setFlowStep('phase1_collaborators')
+    const content = action === 'download' ? 'Download templates' : 'Upload your own files'
+    
+    // If download, we might simulate a download action here
+    
+    const userMessage: Message = {
+      id: `user-${Date.now()}`,
+      role: 'user',
+      content: content,
+    }
+    setMessages((prev) => [...prev, userMessage])
+    await sendMessage(content)
+  }
+
+  // Handle Collaborators Selection (Step 5)
+  const handleCollaboratorsSelect = async (needsHelp: boolean) => {
+    setFlowStep('phase1_file_upload')
+    const content = needsHelp ? 'a) Yes' : 'b) No'
+    
+    const userMessage: Message = {
+      id: `user-${Date.now()}`,
+      role: 'user',
+      content: content,
+    }
+    setMessages((prev) => [...prev, userMessage])
+    await sendMessage(content)
+  }
+
+  // Handle Year Consistency Check (Step 7)
+  const handleYearConsistencySelect = async (excludePrevious: boolean) => {
+    setFlowStep('phase1_data_analysis')
+    const content = excludePrevious ? 'a) Yes, exclude previous years' : 'b) No, keep them for context'
+    
+    const userMessage: Message = {
+      id: `user-${Date.now()}`,
+      role: 'user',
+      content: content,
+    }
+    setMessages((prev) => [...prev, userMessage])
+    await sendMessage(content)
+  }
+
+  // Handle Data Analysis Action (Step 8)
+  const handleDataAnalysisAction = async (action: 'review' | 'correct') => {
+    setFlowStep('phase1_additional_files')
+    const content = action === 'review' ? '1) Review issues now' : '2) Correct or validate directly'
+    
+    const userMessage: Message = {
+      id: `user-${Date.now()}`,
+      role: 'user',
+      content: content,
+    }
+    setMessages((prev) => [...prev, userMessage])
+    await sendMessage(content)
+  }
+
+  // Handle Additional Files Action (Step 9)
+  const handleAdditionalFilesAction = async (action: 'add' | 'skip') => {
+    setFlowStep('phase1_data_validation')
+    const content = action === 'add' ? 'Add more files now' : 'Skip this step'
+    
+    const userMessage: Message = {
+      id: `user-${Date.now()}`,
+      role: 'user',
+      content: content,
+    }
+    setMessages((prev) => [...prev, userMessage])
+    await sendMessage(content)
+  }
+
+  // Handle Data Validation (Step 10)
+  const handleDataValidationAction = async (action: 'validate' | 'correct') => {
+    setFlowStep(action === 'validate' ? 'phase1_move_to_standardisation' : 'phase1_data_validation') // Stay if correcting
+    const content = action === 'validate' ? 'a) Yes, validate' : 'b) No, correct more data'
+    
+    const userMessage: Message = {
+      id: `user-${Date.now()}`,
+      role: 'user',
+      content: content,
+    }
+    setMessages((prev) => [...prev, userMessage])
+    await sendMessage(content)
+  }
+  
+  // Handle Missing BU/Brand (Phase 2 - Step 13)
+  const handleMissingBuBrandSelect = async (addNow: boolean) => {
+    // Assuming next step is mapping review or similar based on previous code
+    setFlowStep('phase2_mapping_review') 
+    const content = addNow ? 'a) Yes' : 'b) No'
+    
+    const userMessage: Message = {
+      id: `user-${Date.now()}`,
+      role: 'user',
+      content: content,
+    }
+    setMessages((prev) => [...prev, userMessage])
+    await sendMessage(content)
   }
 
   // Handle file upload and analysis
@@ -244,7 +383,7 @@ export function ConversationalAI({ width = 374, onAnalysisComplete }: Conversati
       content: `📎 Uploaded ${fileArray.length} file(s): ${fileArray.map(f => f.name).join(', ')}`,
     }
     setMessages((prev) => [...prev, fileMessage])
-    setFlowStep('phase1_data_description')
+    setFlowStep('phase1_year_consistency') // Updated to match new flow
     setIsLoading(true)
 
     // Simulate file analysis
@@ -364,7 +503,7 @@ Please analyze this dataset and proceed with the schema inference.`
 
   // Handle Phase 2 start - sends to OpenAI
   const handlePhase2Start = async () => {
-    setFlowStep('phase2_mapping_review')
+    setFlowStep('phase2_check_missing_bu_brand')
     await sendMessage('Yes, proceed to Phase 2')
   }
 
@@ -1258,15 +1397,21 @@ Please analyze this dataset and proceed with the schema inference.`
                         })}
                       </Typography>
                       
-                      {/* Phase 1: Goal Selection Buttons */}
-                      {flowStep === 'phase1_goal' && message.content.includes('What\'s your goal?') && (
+                      {/* Phase 1: Goal Selection Buttons - Only show once, before goal is selected */}
+                      {flowStep === 'phase1_goal' && 
+                       message.content.includes('What footprint do you wish to build?') && 
+                       !goal.type && (
                         <Box sx={{ display: 'flex', flexDirection: 'column', gap: '12px', mt: 2, width: '100%' }}>
-                          <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap' }}>
-                            {(['PCF', 'CCF'] as const).map((goalType) => (
+                          <Stack direction="column" spacing={1} sx={{ width: '100%' }}>
+                            {([
+                              { label: 'a) Scope 3.1 footprint', value: 'Scope 3.1' as const },
+                              { label: 'b) PCFs', value: 'PCFs' as const },
+                              { label: 'c) Supplier Engagement', value: 'Supplier Engagement' as const },
+                            ]).map((option) => (
                               <Button
-                                key={goalType}
+                                key={option.value}
                                 variant="outlined"
-                                onClick={() => handleGoalSelect(goalType)}
+                                onClick={() => handleGoalSelect(option.value)}
                                 sx={{
                                   borderColor: '#44c571',
                                   color: '#44c571',
@@ -1279,21 +1424,158 @@ Please analyze this dataset and proceed with the schema inference.`
                                   py: '6px',
                                   borderRadius: '4px',
                                   textTransform: 'none',
+                                  justifyContent: 'flex-start',
                                   '&:hover': {
                                     borderColor: '#44c571',
                                     backgroundColor: 'rgba(68, 197, 113, 0.1)',
                                   },
                                 }}
                               >
-                                {goalType}
+                                {option.label}
                               </Button>
                             ))}
                           </Stack>
                         </Box>
                       )}
 
-                      {/* Phase 1: File Upload Interface */}
-                      {flowStep === 'phase1_file_upload' && message.content.includes('Please upload your raw dataset file') && (
+                      {/* Phase 1: Year Selection Dropdown */}
+                      {message.role === 'assistant' &&
+                       message.content.includes('For which reporting year') && 
+                       goal.type && 
+                       !goal.period && (
+                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: '12px', mt: 2, width: '100%' }}>
+                          <FormControl
+                            fullWidth
+                            sx={{
+                              '& .MuiOutlinedInput-root': {
+                                borderColor: '#44c571',
+                                borderRadius: '4px',
+                                '& fieldset': {
+                                  borderColor: '#44c571',
+                                },
+                                '&:hover fieldset': {
+                                  borderColor: '#44c571',
+                                },
+                                '&.Mui-focused fieldset': {
+                                  borderColor: '#44c571',
+                                },
+                              },
+                            }}
+                          >
+                            <InputLabel
+                              sx={{
+                                color: '#b6bab1',
+                                fontFamily: 'Roboto, sans-serif',
+                                fontSize: 14,
+                                '&.Mui-focused': {
+                                  color: '#44c571',
+                                },
+                              }}
+                            >
+                              Select Year
+                            </InputLabel>
+                            <Select
+                              value={goal.period || ''}
+                              onChange={(e) => handleYearSelect(e.target.value)}
+                              label="Select Year"
+                              sx={{
+                                color: '#ffffff',
+                                fontFamily: 'Roboto, sans-serif',
+                                fontSize: 14,
+                                '& .MuiSelect-icon': {
+                                  color: '#44c571',
+                                },
+                              }}
+                            >
+                              {Array.from({ length: 16 }, (_, i) => 2020 + i).map((year) => (
+                                <MenuItem
+                                  key={year}
+                                  value={year.toString()}
+                                  sx={{
+                                    color: '#ffffff',
+                                    fontFamily: 'Roboto, sans-serif',
+                                    fontSize: 14,
+                                    '&:hover': {
+                                      backgroundColor: 'rgba(68, 197, 113, 0.1)',
+                                    },
+                                    '&.Mui-selected': {
+                                      backgroundColor: 'rgba(68, 197, 113, 0.2)',
+                                      '&:hover': {
+                                        backgroundColor: 'rgba(68, 197, 113, 0.3)',
+                                      },
+                                    },
+                                  }}
+                                >
+                                  {year}
+                                </MenuItem>
+                              ))}
+                            </Select>
+                          </FormControl>
+                        </Box>
+                      )}
+
+                      {/* Phase 1: Step 3 - Prior Experience */}
+                      {flowStep === 'phase1_prior_experience' && message.content.includes('Have you already computed a footprint') && (
+                        <Box sx={{ display: 'flex', flexDirection: 'row', gap: '12px', mt: 2, width: '100%' }}>
+                          <Button
+                            variant="outlined"
+                            onClick={() => handlePriorExperienceSelect(true)}
+                            sx={{ borderColor: '#44c571', color: '#44c571', textTransform: 'none' }}
+                          >
+                            a) Yes
+                          </Button>
+                          <Button
+                            variant="outlined"
+                            onClick={() => handlePriorExperienceSelect(false)}
+                            sx={{ borderColor: '#44c571', color: '#44c571', textTransform: 'none' }}
+                          >
+                            b) No
+                          </Button>
+                        </Box>
+                      )}
+
+                      {/* Phase 1: Step 4 - Recommend Files */}
+                      {flowStep === 'phase1_recommend_files' && message.content.includes('What files do you plan to upload?') && (
+                        <Box sx={{ display: 'flex', flexDirection: 'row', gap: '12px', mt: 2, width: '100%' }}>
+                          <Button
+                            variant="outlined"
+                            onClick={() => handleRecommendFilesAction('download')}
+                            sx={{ borderColor: '#44c571', color: '#44c571', textTransform: 'none' }}
+                          >
+                            Download templates
+                          </Button>
+                          <Button
+                            variant="outlined"
+                            onClick={() => handleRecommendFilesAction('upload')}
+                            sx={{ borderColor: '#44c571', color: '#44c571', textTransform: 'none' }}
+                          >
+                            Upload your own files
+                          </Button>
+                        </Box>
+                      )}
+
+                      {/* Phase 1: Step 5 - Collaborators */}
+                      {flowStep === 'phase1_collaborators' && message.content.includes('Do you need other people to help') && (
+                        <Box sx={{ display: 'flex', flexDirection: 'row', gap: '12px', mt: 2, width: '100%' }}>
+                          <Button
+                            variant="outlined"
+                            onClick={() => handleCollaboratorsSelect(true)}
+                            sx={{ borderColor: '#44c571', color: '#44c571', textTransform: 'none' }}
+                          >
+                            a) Yes
+                          </Button>
+                          <Button
+                            variant="outlined"
+                            onClick={() => handleCollaboratorsSelect(false)}
+                            sx={{ borderColor: '#44c571', color: '#44c571', textTransform: 'none' }}
+                          >
+                            b) No
+                          </Button>
+                        </Box>
+                      )}
+
+                      {/* Phase 1: Step 6 - File Upload Interface */}
+                      {flowStep === 'phase1_file_upload' && (message.content.includes('Please upload each file') || message.content.includes('Please upload your raw dataset file')) && (
                         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, mt: 2 }}>
                           <input
                             ref={fileInputRef}
@@ -1345,37 +1627,113 @@ Please analyze this dataset and proceed with the schema inference.`
                         </Box>
                       )}
 
-                      {/* Phase 1: Schema Confirmation Buttons */}
-                      {flowStep === 'phase1_schema_review' && message.content.includes('Does this schema look correct?') && (
-                        <Box sx={{ display: 'flex', flexDirection: 'row', gap: '12px', mt: 2, width: '100%' }}>
+                      {/* Phase 1: Step 7 - Year Consistency */}
+                      {flowStep === 'phase1_year_consistency' && message.content.includes('Do you want to exclude data from previous years') && (
+                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: '8px', mt: 2, width: '100%' }}>
                           <Button
                             variant="outlined"
-                            onClick={() => handleSchemaConfirm(true)}
-                            sx={{
-                              borderColor: '#44c571',
-                              color: '#44c571',
-                              fontFamily: 'Roboto, sans-serif',
-                              fontSize: 14,
-                              fontWeight: 500,
-                              letterSpacing: '0.4px',
-                              lineHeight: '24px',
-                              px: 2,
-                              py: '6px',
-                              borderRadius: '4px',
-                              textTransform: 'none',
-                              '&:hover': {
-                                borderColor: '#44c571',
-                                backgroundColor: 'rgba(68, 197, 113, 0.1)',
-                              },
-                            }}
+                            onClick={() => handleYearConsistencySelect(true)}
+                            sx={{ borderColor: '#44c571', color: '#44c571', textTransform: 'none', justifyContent: 'flex-start' }}
                           >
-                            Yes, looks correct
+                            a) Yes, exclude previous years
+                          </Button>
+                          <Button
+                            variant="outlined"
+                            onClick={() => handleYearConsistencySelect(false)}
+                            sx={{ borderColor: '#44c571', color: '#44c571', textTransform: 'none', justifyContent: 'flex-start' }}
+                          >
+                            b) No, keep them for context
                           </Button>
                         </Box>
                       )}
 
-                      {/* Phase 1: Proceed to Phase 2 Button */}
-                      {flowStep === 'phase1_cleaning_confirmation' && message.content.includes('Ready to proceed to Phase 2') && (
+                      {/* Phase 1: Step 8 - Data Analysis & Errors */}
+                      {flowStep === 'phase1_data_analysis' && message.content.includes('What would you like to do?') && (
+                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: '8px', mt: 2, width: '100%' }}>
+                          <Button
+                            variant="outlined"
+                            onClick={() => handleDataAnalysisAction('review')}
+                            sx={{ borderColor: '#44c571', color: '#44c571', textTransform: 'none', justifyContent: 'flex-start' }}
+                          >
+                            1) Review issues now
+                          </Button>
+                          <Button
+                            variant="outlined"
+                            onClick={() => handleDataAnalysisAction('correct')}
+                            sx={{ borderColor: '#44c571', color: '#44c571', textTransform: 'none', justifyContent: 'flex-start' }}
+                          >
+                            2) Correct or validate directly
+                          </Button>
+                        </Box>
+                      )}
+
+                      {/* Phase 1: Step 9 - Additional Files */}
+                      {flowStep === 'phase1_additional_files' && message.content.includes('Would you like to add files') && (
+                        <Box sx={{ display: 'flex', flexDirection: 'row', gap: '12px', mt: 2, width: '100%' }}>
+                          <Button
+                            variant="outlined"
+                            onClick={() => handleAdditionalFilesAction('add')}
+                            sx={{ borderColor: '#44c571', color: '#44c571', textTransform: 'none' }}
+                          >
+                            Add more files now
+                          </Button>
+                          <Button
+                            variant="outlined"
+                            onClick={() => handleAdditionalFilesAction('skip')}
+                            sx={{ borderColor: '#44c571', color: '#44c571', textTransform: 'none' }}
+                          >
+                            Skip this step
+                          </Button>
+                        </Box>
+                      )}
+
+                      {/* Phase 1: Step 10 - Data Validation (Clean Data) */}
+                      {flowStep === 'phase1_data_validation' && message.content.includes('Are you ready to validate this CLEANED DATA?') && (
+                        <Box sx={{ display: 'flex', flexDirection: 'row', gap: '12px', mt: 2, width: '100%' }}>
+                          <Button
+                            variant="contained"
+                            onClick={() => handleDataValidationAction('validate')}
+                            sx={{
+                              backgroundColor: '#44c571',
+                              color: '#ffffff',
+                              textTransform: 'none',
+                              '&:hover': { backgroundColor: '#3db362' },
+                            }}
+                          >
+                            a) Yes, validate
+                          </Button>
+                          <Button
+                            variant="outlined"
+                            onClick={() => handleDataValidationAction('correct')}
+                            sx={{ borderColor: '#44c571', color: '#44c571', textTransform: 'none' }}
+                          >
+                            b) No, correct more data
+                          </Button>
+                        </Box>
+                      )}
+
+                      {/* Phase 2: Step 13 - Missing BU/Brand */}
+                      {flowStep === 'phase2_check_missing_bu_brand' && message.content.includes('Add Business Units / Brands now?') && (
+                         <Box sx={{ display: 'flex', flexDirection: 'row', gap: '12px', mt: 2, width: '100%' }}>
+                          <Button
+                            variant="outlined"
+                            onClick={() => handleMissingBuBrandSelect(true)}
+                            sx={{ borderColor: '#44c571', color: '#44c571', textTransform: 'none' }}
+                          >
+                            a) Yes
+                          </Button>
+                          <Button
+                            variant="outlined"
+                            onClick={() => handleMissingBuBrandSelect(false)}
+                            sx={{ borderColor: '#44c571', color: '#44c571', textTransform: 'none' }}
+                          >
+                            b) No
+                          </Button>
+                        </Box>
+                      )}
+
+                      {/* Phase 1: Proceed to Phase 2 Button (Transition) */}
+                      {flowStep === 'phase1_move_to_standardisation' && message.content.includes('Ready to proceed to Phase 2') && (
                         <Box sx={{ display: 'flex', flexDirection: 'row', gap: '12px', mt: 2, width: '100%' }}>
                           <Button
                             variant="contained"
@@ -1383,18 +1741,8 @@ Please analyze this dataset and proceed with the schema inference.`
                             sx={{
                               backgroundColor: '#44c571',
                               color: '#ffffff',
-                              fontFamily: 'Roboto, sans-serif',
-                              fontSize: 14,
-                              fontWeight: 500,
-                              letterSpacing: '0.4px',
-                              lineHeight: '24px',
-                              px: 2,
-                              py: '6px',
-                              borderRadius: '4px',
                               textTransform: 'none',
-                              '&:hover': {
-                                backgroundColor: '#3db362',
-                              },
+                              '&:hover': { backgroundColor: '#3db362' },
                             }}
                           >
                             Proceed to Phase 2
