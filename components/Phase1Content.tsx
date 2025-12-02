@@ -626,27 +626,42 @@ export function Phase1Content() {
             value={tabValue}
             onChange={(_, newValue) => setTabValue(newValue)}
             sx={{
-              borderBottom: '1px solid #3d3744',
-              '& .MuiTab-root': {
-                color: '#d2d7cb',
-                fontSize: 14,
-                fontWeight: 500,
-                lineHeight: '24px',
-                letterSpacing: '0.4px',
-                textTransform: 'none',
-                minHeight: 36,
-                '&.Mui-selected': {
-                  color: '#44c571',
-                },
+              width: 250,
+              minHeight: 36,
+              height: 36,
+              bgcolor: '#2b2733',
+              borderRadius: '8px 8px 0 0',
+              '& .MuiTabs-flexContainer': {
+                height: '100%',
               },
               '& .MuiTabs-indicator': {
-                bgcolor: '#44c571',
-                height: 2,
+                display: 'none',
+              },
+              '& .MuiTab-root': {
+                textTransform: 'none',
+                minHeight: 36,
+                height: 36,
+                padding: '7px 12px',
+                fontSize: 14,
+                fontWeight: 500,
+                color: '#b6bab1',
+                fontFamily: 'Roboto, sans-serif',
+                letterSpacing: '0.4px',
+                lineHeight: 'normal',
+                borderRadius: '8px 8px 0 0',
+                '&.Mui-selected': {
+                  color: '#ffffff',
+                  bgcolor: '#1e1c26',
+                },
+                '&:hover:not(.Mui-selected)': {
+                  color: '#ffffff',
+                  bgcolor: 'rgba(255, 255, 255, 0.05)',
+                },
               },
             }}
           >
-            <Tab label="Raw Data" />
-            <Tab label="Standardized Data" />
+            <Tab label="Raw Data" disableRipple />
+            <Tab label="Standardized Data" disableRipple />
           </Tabs>
 
           {/* Step Title */}
