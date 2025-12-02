@@ -33,6 +33,15 @@ import {
   ThumbDown,
   ExpandMore,
   ChevronRight,
+  CheckCircle,
+  RadioButtonUnchecked,
+  Receipt,
+  People,
+  Category,
+  Business,
+  LocationOn,
+  AttachMoney,
+  Description
 } from '@mui/icons-material'
 
 interface ConversationalAIProps {
@@ -170,6 +179,8 @@ export function ConversationalAI({ width = 374, onAnalysisComplete, onGoalSelect
   const [goal, setGoal] = useState<{type: string | null, period: string}>({type: null, period: ''})
   const [priorExperience, setPriorExperience] = useState<boolean | null>(null)
   const [uploadedFilesInfo, setUploadedFilesInfo] = useState<any[]>([])
+  const [selectedFileTypes, setSelectedFileTypes] = useState<string[]>(['procurement', 'suppliers'])
+  const [otherFileDescription, setOtherFileDescription] = useState('')
   
   const flowStartedRef = useRef(false)
   
@@ -178,6 +189,17 @@ export function ConversationalAI({ width = 374, onAnalysisComplete, onGoalSelect
   const contentRef = useRef<HTMLDivElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
+
+  // Step 4 Options Data
+  const fileOptions = [
+    { id: 'procurement', label: 'Procurement Data', desc: 'Purchase orders, invoices, transaction records', icon: <Receipt sx={{ fontSize: 20, color: '#2E7D32' }} /> },
+    { id: 'suppliers', label: 'Suppliers List', desc: 'Supplier names, locations, contact info, spend data', icon: <People sx={{ fontSize: 20, color: '#1976D2' }} /> },
+    { id: 'products', label: 'Products Catalog', desc: 'Product names, categories, quantities, materials', icon: <Category sx={{ fontSize: 20, color: '#E65100' }} /> },
+    { id: 'business_units', label: 'Business Units', desc: 'BU hierarchy, departments, cost centers', icon: <Business sx={{ fontSize: 20, color: '#689F38' }} /> },
+    { id: 'sites', label: 'Sites / Locations', desc: 'Facility addresses, geographic data', icon: <LocationOn sx={{ fontSize: 20, color: '#00796B' }} /> },
+    { id: 'spend', label: 'Spend Data', desc: 'Financial records, budgets, cost allocations', icon: <AttachMoney sx={{ fontSize: 20, color: '#C2185B' }} /> },
+    { id: 'other', label: 'Other', desc: 'Add custom document type', icon: <Add sx={{ fontSize: 20, color: '#757575' }} /> },
+  ]
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -230,22 +252,7 @@ export function ConversationalAI({ width = 374, onAnalysisComplete, onGoalSelect
   // Step 3: Prior Experience
   const handleStep3Select = async (hasExperience: boolean) => {
     setPriorExperience(hasExperience)
-    // Logic is handled by AI prompt to ask follow-up, but we advance state to handle UI
-    // If Yes, we need text input. If No, we need motivation buttons.
-    // We'll stay in this step's UI mode until user provides the follow-up.
-    // Wait, the prompt says: "If Yes -> Ask SHORT free-text... If No -> Present buttons".
-    // So we send "Yes" or "No" and let AI ask the next question.
-    // The AI will then ask the question. We need to detect WHICH question it asked to render the right UI.
-    // OR we can just infer based on our selection.
-    // Let's update flowStep to a substep or just keep it and use local state?
-    // Simplest is to send the answer, then update flowStep to 'phase1_step3_prior_experience_followup' ?
-    // Actually, the prompt treats the follow-up as part of the same logical block or the next interaction.
-    // Let's assume the AI replies with the question.
-    // We'll send the answer now.
     await sendMessage(hasExperience ? 'Yes' : 'No')
-    // We don't advance flowStep yet, we wait for the AI to reply?
-    // Actually, for a "Low Flexibility" flow, we should control the state.
-    // Let's use a temporary state or just check the last message content.
   }
 
   // Step 3 Follow-up: Motivation (if No)
@@ -254,23 +261,21 @@ export function ConversationalAI({ width = 374, onAnalysisComplete, onGoalSelect
     await sendMessage(motivation)
   }
 
-  // Step 3 Follow-up: Description (if Yes) -> handled by text input, which calls sendMessage
-  // We need to detect if we are in this state to advance to Step 4 after text input.
-  
-  // Step 4: File Recommendations
-  const handleStep4Action = async (action: 'download' | 'upload') => {
-    // If upload, we trigger file input. If download, we simulate download then ask to upload.
-    if (action === 'upload') {
-       // We'll simulate upload by just advancing for now, or use the file input handler
-       // For this flow, let's say 'Upload files' just prompts the standard upload behavior
-       handleFileAttach()
-       // We don't send message yet? Or we send "I'll upload files".
-       // Let's send a message to acknowledge.
-       await sendMessage('I will upload files')
-    } else {
-       await sendMessage('Download templates')
-    }
+  // Step 4: File Recommendations - NEW LOGIC
+  const toggleFileType = (id: string) => {
+    setSelectedFileTypes(prev => 
+      prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]
+    )
+  }
+
+  const handleStep4Continue = async () => {
+    const selectedLabels = fileOptions
+        .filter(opt => selectedFileTypes.includes(opt.id))
+        .map(opt => opt.id === 'other' ? `Other: ${otherFileDescription}` : opt.label)
+    
+    const message = `I plan to upload: ${selectedLabels.join(', ')}`
     setFlowStep('phase1_step5_collaborator_support')
+    await sendMessage(message)
   }
 
   // Step 5: Collaborators
@@ -301,9 +306,7 @@ export function ConversationalAI({ width = 374, onAnalysisComplete, onGoalSelect
     await sendMessage(action)
   }
 
-  // Step 10: Transition -> Automatic proceed usually, or user clicks "Next"?
-  // Prompt says "Proceed." implied automatic or user ack.
-  // Let's add a "Proceed" button for Step 10.
+  // Step 10: Transition
   const handleStep10Proceed = async () => {
     setFlowStep('phase2_step11_optional_bu_check')
     await sendMessage('Proceed')
@@ -315,8 +318,7 @@ export function ConversationalAI({ width = 374, onAnalysisComplete, onGoalSelect
     await sendMessage(action)
   }
 
-  // Step 12: Transformation -> Automatic?
-  // "We are converting..." -> "Proceed"
+  // Step 12: Transformation
   const handleStep12Proceed = async () => {
     setFlowStep('phase2_step13_standardised_available')
     await sendMessage('Proceed')
@@ -325,39 +327,20 @@ export function ConversationalAI({ width = 374, onAnalysisComplete, onGoalSelect
   // Step 13: Standardised Available
   const handleStep13Action = async (action: string) => {
     if (action === 'Proceed to activities') {
-      setFlowStep('phase2_step16_activity_creation_summary') // Skip optional review?
-      // Wait, prompt flow says Step 13 -> "Would you like to proceed to activity creation? Yes/Not yet".
-      // If user clicks "Proceed to activities" button immediately.
+      setFlowStep('phase2_step16_activity_creation_summary') 
     } else {
-        // User viewed report. Now Ask "Would you like to proceed?"
-        // We might need an intermediate state or just handle logic.
+        // Wait for user confirmation if they viewed reports
     }
     await sendMessage(action)
     if (action === 'Proceed to activities') {
          setFlowStep('phase2_step16_activity_creation_summary') 
-    } else {
-        // If they viewed a report, the next logical step in prompt is Step 13 confirmation.
-        // "Would you like to proceed to activity creation?" -> Buttons Yes / Not yet
     }
   }
 
-  // For simplicity in this strict flow, I'll map the main path.
-  
   // Step 14: Review Standardised (Optional)
-  // This step is triggered if user didn't proceed directly? 
-  // The prompt says Step 13 has "Proceed to activities". Step 14 is "Review Standardised Data (Optional)".
-  // Maybe Step 13 leads to 14? 
-  // Let's follow the prompt's linear flow strictly.
-  // Step 13: "What would you like to view?" -> User picks.
-  // Then AI asks "Would you like to proceed?".
-  // Then Step 14: "Would you like to review...?" 
-  // This seems redundant if they just viewed it.
-  // I will implement Step 13 -> Step 14 -> Step 15.
-
   const handleStep14Action = async (action: string) => {
     if (action.includes('Yes')) {
-      // Show summary then ask if questions.
-      // We'll let AI handle the text.
+       // handled by AI
     } else {
       setFlowStep('phase2_step15_validate_standardised')
     }
@@ -601,12 +584,103 @@ export function ConversationalAI({ width = 374, onAnalysisComplete, onGoalSelect
                             </>
                         )}
 
-                        {/* Step 4 */}
+                        {/* Step 4 - NEW UX */}
                         {flowStep === 'phase1_step4_file_recommendations' && (
-                            <>
-                                <Button variant="outlined" onClick={() => handleStep4Action('download')} sx={{ color: '#44c571', borderColor: '#44c571', textTransform: 'none' }}>Download templates</Button>
-                                <Button variant="contained" onClick={() => handleStep4Action('upload')} sx={{ bgcolor: '#44c571', textTransform: 'none' }}>Upload files</Button>
-                            </>
+                            <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 2 }}>
+                                <Typography sx={{ color: '#b6bab1', fontSize: 13, mb: 1 }}>Select the documents you plan to upload:</Typography>
+                                
+                                <Stack spacing={1.5} sx={{ width: '100%' }}>
+                                    {fileOptions.map((opt) => {
+                                        const isSelected = selectedFileTypes.includes(opt.id)
+                                        return (
+                                            <Box 
+                                                key={opt.id}
+                                                onClick={() => toggleFileType(opt.id)}
+                                                sx={{
+                                                    display: 'flex',
+                                                    flexDirection: 'column',
+                                                    p: 2,
+                                                    borderRadius: 3,
+                                                    border: `1px solid ${isSelected ? '#A855F7' : '#3d3744'}`,
+                                                    bgcolor: isSelected ? 'rgba(168, 85, 247, 0.04)' : 'transparent',
+                                                    cursor: 'pointer',
+                                                    transition: 'all 0.2s',
+                                                    '&:hover': {
+                                                        borderColor: isSelected ? '#A855F7' : '#554b55',
+                                                        bgcolor: isSelected ? 'rgba(168, 85, 247, 0.08)' : 'rgba(255,255,255,0.02)'
+                                                    }
+                                                }}
+                                            >
+                                                <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.5 }}>
+                                                    {/* Selection Icon */}
+                                                    <Box sx={{ color: isSelected ? '#A855F7' : '#73696d', display: 'flex', alignItems: 'center', mt: 0.5 }}>
+                                                        {isSelected ? <CheckCircle sx={{ fontSize: 22 }} /> : <RadioButtonUnchecked sx={{ fontSize: 22 }} />}
+                                                    </Box>
+                                                    
+                                                    {/* Content */}
+                                                    <Box sx={{ flex: 1 }}>
+                                                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
+                                                            {opt.icon}
+                                                            <Typography sx={{ color: '#fff', fontSize: 14, fontWeight: 500 }}>{opt.label}</Typography>
+                                                        </Box>
+                                                        <Typography sx={{ color: '#b6bab1', fontSize: 12, lineHeight: 1.4 }}>{opt.desc}</Typography>
+                                                    </Box>
+                                                </Box>
+
+                                                {/* Other Input */}
+                                                {opt.id === 'other' && isSelected && (
+                                                    <Box sx={{ mt: 1.5, ml: 4.5 }} onClick={(e) => e.stopPropagation()}>
+                                                        <TextField
+                                                            fullWidth
+                                                            size="small"
+                                                            placeholder="Describe your document(s)..."
+                                                            value={otherFileDescription}
+                                                            onChange={(e) => setOtherFileDescription(e.target.value)}
+                                                            sx={{
+                                                                bgcolor: 'rgba(0,0,0,0.2)',
+                                                                borderRadius: 1,
+                                                                '& .MuiOutlinedInput-root': {
+                                                                    color: '#fff',
+                                                                    fontSize: 13,
+                                                                    '& fieldset': { borderColor: '#3d3744' },
+                                                                    '&:hover fieldset': { borderColor: '#554b55' },
+                                                                    '&.Mui-focused fieldset': { borderColor: '#A855F7' }
+                                                                },
+                                                                '& input::placeholder': { color: '#73696d' }
+                                                            }}
+                                                        />
+                                                    </Box>
+                                                )}
+                                            </Box>
+                                        )
+                                    })}
+                                </Stack>
+
+                                <Button 
+                                    variant="contained" 
+                                    fullWidth
+                                    onClick={handleStep4Continue}
+                                    sx={{ 
+                                        mt: 2,
+                                        bgcolor: '#2E7D32', // Matches screenshot green somewhat, or stick to purple? User said "keeping our branding".
+                                        // Screenshot has green. User says "keeping our branding". 
+                                        // Branding is purple (#A855F7). I will use purple gradient.
+                                        background: 'linear-gradient(90deg, #A855F7 0%, #7C3AED 100%)',
+                                        textTransform: 'none',
+                                        fontSize: 14,
+                                        fontWeight: 600,
+                                        py: 1.5,
+                                        borderRadius: 2,
+                                        boxShadow: '0 4px 12px rgba(124, 58, 237, 0.25)',
+                                        '&:hover': {
+                                            background: 'linear-gradient(90deg, #9333EA 0%, #6D28D9 100%)',
+                                        }
+                                    }}
+                                    endIcon={<ChevronRight />}
+                                >
+                                    Continue
+                                </Button>
+                            </Box>
                         )}
 
                         {/* Step 5 */}
