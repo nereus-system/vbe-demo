@@ -22,6 +22,8 @@ import {
   Star,
   StarBorder,
   Close,
+  Edit,
+  MoreVert,
 } from '@mui/icons-material'
 
 // Vertical Stepper Component
@@ -444,7 +446,7 @@ function DataReqFolderSection() {
               minWidth: 0,
             }}
           >
-            {/* Text Container - gap 10px */}
+            {/* Text Container - gap 4px */}
             <Box 
               sx={{ 
                 display: 'flex',
@@ -453,6 +455,7 @@ function DataReqFolderSection() {
                 alignItems: 'flex-start',
                 maxWidth: 720,
                 flexShrink: 0,
+                width: 720,
               }}
             >
               <Box 
@@ -491,58 +494,62 @@ function DataReqFolderSection() {
                     flexShrink: 0,
                   }}
                 >
-                  3 files
+                  | 4 files
                 </Typography>
               </Box>
+              <Typography
+                sx={{
+                  fontSize: 14,
+                  fontWeight: 400,
+                  color: '#b6bab1',
+                  lineHeight: 1.43,
+                  letterSpacing: '0.17px',
+                  fontFamily: 'Roboto, sans-serif',
+                  width: '100%',
+                }}
+              >
+                Files around procurement.
+              </Typography>
             </Box>
 
             {/* Icon Buttons Container */}
             <Box 
               sx={{ 
                 display: 'flex',
-                flexDirection: 'row',
                 alignItems: 'center',
+                pb: 0,
+                pt: 0.5, // 4px
+                px: 0,
                 alignSelf: 'stretch',
                 flexShrink: 0,
               }}
             >
-              <Box 
-                sx={{ 
-                  display: 'flex',
-                  height: '100%',
-                  alignItems: 'center',
-                  pb: 0,
-                  pt: 0.5, // 4px
-                  px: 0,
+              <IconButton
+                sx={{
+                  color: '#d2d7cb',
+                  width: 36, // 20px icon + 8px padding * 2
+                  height: 36,
+                  p: 1, // 8px
+                  borderRadius: '50%',
+                  cursor: 'pointer',
+                  '&:hover': { bgcolor: 'rgba(255, 255, 255, 0.1)' },
                 }}
               >
-                <IconButton
-                  sx={{
-                    color: '#ffffff',
-                    width: 40, // 24px icon + 8px padding * 2
-                    height: 40,
-                    p: 1, // 8px
-                    borderRadius: '50%',
-                    cursor: 'pointer',
-                    '&:hover': { bgcolor: 'rgba(255, 255, 255, 0.1)' },
-                  }}
-                >
-                  <StarBorder sx={{ fontSize: 24 }} />
-                </IconButton>
-                <IconButton
-                  sx={{
-                    color: '#ffffff',
-                    width: 40,
-                    height: 40,
-                    p: 1,
-                    borderRadius: '50%',
-                    cursor: 'pointer',
-                    '&:hover': { bgcolor: 'rgba(255, 255, 255, 0.1)' },
-                  }}
-                >
-                  <StarBorder sx={{ fontSize: 24 }} />
-                </IconButton>
-              </Box>
+                <Edit sx={{ fontSize: 20 }} />
+              </IconButton>
+              <IconButton
+                sx={{
+                  color: '#d2d7cb',
+                  width: 36,
+                  height: 36,
+                  p: 1,
+                  borderRadius: '50%',
+                  cursor: 'pointer',
+                  '&:hover': { bgcolor: 'rgba(255, 255, 255, 0.1)' },
+                }}
+              >
+                <MoreVert sx={{ fontSize: 20 }} />
+              </IconButton>
             </Box>
           </Box>
         </Box>
