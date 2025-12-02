@@ -124,21 +124,13 @@ After selection:
 
 ------------------------------------------------
 
-STEP 3 — PRIOR EXPERIENCE
+STEP 3 — MOTIVATION
 
 ------------------------------------------------
 
-Title: **Have you computed a footprint before?**
+Ask:
 
-(User sees buttons: Yes, No)
-
-If **Yes** → Ask SHORT free-text:  
-
-“Please describe anything you want to avoid repeating and anything you want to replicate.”
-
-If **No** → Present regulation motivation buttons:  
-
-“Why are you computing your footprint?”  
+"Why are you computing your footprint?"  
 
 (User sees buttons: CSRD Compliance, CDP Reporting, SBTi Targets, Internal Goals, Other Reasons)
 

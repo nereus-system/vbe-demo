@@ -139,7 +139,6 @@ export function ConversationalAI({ width = 374, onAnalysisComplete, onGoalSelect
   
   // State for flow data
   const [goal, setGoal] = useState<{type: string | null, period: string}>({type: null, period: ''})
-  const [priorExperience, setPriorExperience] = useState<boolean | null>(null)
   const [uploadedFilesInfo, setUploadedFilesInfo] = useState<any[]>([])
   const [selectedFileTypes, setSelectedFileTypes] = useState<string[]>(['procurement', 'suppliers'])
   const [otherFileDescription, setOtherFileDescription] = useState('')
@@ -211,13 +210,7 @@ export function ConversationalAI({ width = 374, onAnalysisComplete, onGoalSelect
     await sendMessage(year)
   }
 
-  // Step 3: Prior Experience
-  const handleStep3Select = async (hasExperience: boolean) => {
-    setPriorExperience(hasExperience)
-    await sendMessage(hasExperience ? 'Yes' : 'No')
-  }
-
-  // Step 3 Follow-up: Motivation (if No)
+  // Step 3: Motivation (Yes/No removed, go directly to motivation)
   const handleStep3MotivationSelect = async (motivation: string) => {
     setFlowStep('phase1_step4_file_recommendations')
     await sendMessage(motivation)
@@ -376,10 +369,6 @@ export function ConversationalAI({ width = 374, onAnalysisComplete, onGoalSelect
     }
 
     // Handle state transitions for text-input steps
-    // Step 3: Yes path (Description)
-    if (flowStep === 'phase1_step3_prior_experience' && priorExperience === true && messageText !== 'Yes') {
-        setFlowStep('phase1_step4_file_recommendations')
-    }
     // Step 17: Yes path (Rule Description)
     if (flowStep === 'phase2_step17_optional_custom_rules' && messageText !== 'Yes' && messageText !== 'No') {
          setFlowStep('phase3_step18_select_ef_priority')
@@ -540,15 +529,8 @@ export function ConversationalAI({ width = 374, onAnalysisComplete, onGoalSelect
                             </FormControl>
                         )}
 
-                        {/* Step 3 */}
-                        {flowStep === 'phase1_step3_prior_experience' && !priorExperience && (
-                             <>
-                                <Button variant="outlined" onClick={() => handleStep3Select(true)} sx={{ color: '#44c571', borderColor: '#44c571' }}>Yes</Button>
-                                <Button variant="outlined" onClick={() => handleStep3Select(false)} sx={{ color: '#44c571', borderColor: '#44c571' }}>No</Button>
-                             </>
-                        )}
-                        {/* Step 3 Motivation (implicit if No was selected and AI asked Why) */}
-                        {flowStep === 'phase1_step3_prior_experience' && messages[messages.length-1].content.includes('Why') && (
+                        {/* Step 3: Motivation (Yes/No removed) */}
+                        {flowStep === 'phase1_step3_prior_experience' && (
                             <>
                                 {['CSRD Compliance', 'CDP Reporting', 'SBTi Targets', 'Internal Goals', 'Other Reasons'].map(opt => (
                                     <Button key={opt} variant="outlined" onClick={() => handleStep3MotivationSelect(opt)} sx={{ color: '#44c571', borderColor: '#44c571', textTransform: 'none' }}>{opt}</Button>
