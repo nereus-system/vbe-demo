@@ -369,7 +369,7 @@ function DataReqFolderSection() {
   const [expanded, setExpanded] = useState(false)
 
   return (
-    <Box sx={{ width: '100%' }}>
+    <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center' }}>
       <Box
         sx={{
           display: 'flex',
@@ -379,61 +379,170 @@ function DataReqFolderSection() {
         }}
         onClick={() => setExpanded(!expanded)}
       >
-        {/* Chevron Icon Container */}
-        <Box sx={{ width: 18, height: 42, display: 'flex', alignItems: 'center', justifyContent: 'center', pt: 0.5 }}>
-          <ChevronRight
-            sx={{
-              fontSize: 18,
-              color: '#ffffff',
-              transform: expanded ? 'rotate(90deg)' : 'rotate(0deg)',
-              transition: 'transform 0.2s',
-            }}
-          />
+        {/* Chevron Icon Container - gap 10px, height 42px, padding y 15px */}
+        <Box 
+          sx={{ 
+            display: 'flex',
+            gap: 1.25, // 10px
+            height: 42,
+            alignItems: 'center',
+            px: 0,
+            py: 1.875, // 15px
+            flexShrink: 0,
+          }}
+        >
+          <Box sx={{ width: 18, height: 18, display: 'flex', alignItems: 'flex-start' }}>
+            <ChevronRight
+              sx={{
+                fontSize: 18,
+                color: '#ffffff',
+                transform: expanded ? 'rotate(90deg)' : 'rotate(0deg)',
+                transition: 'transform 0.2s',
+                width: 18,
+                height: 18,
+              }}
+            />
+          </Box>
         </Box>
 
-        {/* Folder Content */}
-        <Box sx={{ display: 'flex', gap: 1.25, alignItems: 'center', flex: 1, pl: 1 }}>
-          <Folder sx={{ fontSize: 20, color: '#ffffff' }} />
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flex: 1 }}>
-            <Typography
-              sx={{
-                fontSize: 16,
-                color: '#ffffff',
-                lineHeight: 1.5,
-                letterSpacing: '0.15px',
-                fontFamily: 'Roboto, sans-serif',
+        {/* Folder Content - gap 10px, padding left 8px, padding y 8px */}
+        <Box 
+          sx={{ 
+            display: 'flex',
+            gap: 1.25, // 10px
+            alignItems: 'center',
+            flex: 1,
+            pl: 1, // 8px
+            pr: 0,
+            py: 1, // 8px
+            minHeight: 0,
+            minWidth: 0,
+          }}
+        >
+          {/* Folder Icon Wrapper - gap 10px, padding top 2px */}
+          <Box 
+            sx={{ 
+              display: 'flex',
+              gap: 1.25, // 10px
+              alignItems: 'center',
+              pb: 0,
+              pt: 0.25, // 2px
+              px: 0,
+            }}
+          >
+            <Folder sx={{ fontSize: 20, width: 20, height: 20, color: '#ffffff' }} />
+          </Box>
+
+          {/* Folder Name and Icons */}
+          <Box 
+            sx={{ 
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              flex: 1,
+              minHeight: 0,
+              minWidth: 0,
+            }}
+          >
+            {/* Text Container - gap 10px */}
+            <Box 
+              sx={{ 
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 0.5, // 4px
+                alignItems: 'flex-start',
+                maxWidth: 720,
+                flexShrink: 0,
               }}
             >
-              Footprint 2027
-              <Typography component="span" sx={{ fontSize: 16, fontWeight: 700, color: '#73696d', ml: 1.25, fontFamily: 'Roboto, sans-serif' }}>
-                3 files
-              </Typography>
-            </Typography>
-            <Box sx={{ display: 'flex', gap: 0, alignItems: 'center' }}>
-              <IconButton
-                size="small"
-                sx={{
-                  color: '#ffffff',
-                  width: 24,
-                  height: 24,
-                  p: 1,
-                  '&:hover': { bgcolor: 'rgba(255, 255, 255, 0.1)' },
+              <Box 
+                sx={{ 
+                  display: 'flex',
+                  gap: 1.25, // 10px
+                  alignItems: 'center',
+                  lineHeight: 1.5,
+                  fontSize: 16,
+                  letterSpacing: '0.15px',
+                  whiteSpace: 'nowrap',
+                  width: '100%',
                 }}
               >
-                <StarBorder sx={{ fontSize: 24 }} />
-              </IconButton>
-              <IconButton
-                size="small"
-                sx={{
-                  color: '#ffffff',
-                  width: 24,
-                  height: 24,
-                  p: 1,
-                  '&:hover': { bgcolor: 'rgba(255, 255, 255, 0.1)' },
+                <Typography
+                  sx={{
+                    fontSize: 16,
+                    fontWeight: 400,
+                    color: '#ffffff',
+                    lineHeight: 1.5,
+                    letterSpacing: '0.15px',
+                    fontFamily: 'Roboto, sans-serif',
+                    flexShrink: 0,
+                  }}
+                >
+                  Footprint 2027
+                </Typography>
+                <Typography
+                  sx={{
+                    fontSize: 16,
+                    fontWeight: 700,
+                    color: '#73696d',
+                    lineHeight: 1.5,
+                    letterSpacing: '0.15px',
+                    fontFamily: 'Roboto, sans-serif',
+                    flexShrink: 0,
+                  }}
+                >
+                  3 files
+                </Typography>
+              </Box>
+            </Box>
+
+            {/* Icon Buttons Container */}
+            <Box 
+              sx={{ 
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+                alignSelf: 'stretch',
+                flexShrink: 0,
+              }}
+            >
+              <Box 
+                sx={{ 
+                  display: 'flex',
+                  height: '100%',
+                  alignItems: 'center',
+                  pb: 0,
+                  pt: 0.5, // 4px
+                  px: 0,
                 }}
               >
-                <StarBorder sx={{ fontSize: 24 }} />
-              </IconButton>
+                <IconButton
+                  sx={{
+                    color: '#ffffff',
+                    width: 40, // 24px icon + 8px padding * 2
+                    height: 40,
+                    p: 1, // 8px
+                    borderRadius: '50%',
+                    cursor: 'pointer',
+                    '&:hover': { bgcolor: 'rgba(255, 255, 255, 0.1)' },
+                  }}
+                >
+                  <StarBorder sx={{ fontSize: 24 }} />
+                </IconButton>
+                <IconButton
+                  sx={{
+                    color: '#ffffff',
+                    width: 40,
+                    height: 40,
+                    p: 1,
+                    borderRadius: '50%',
+                    cursor: 'pointer',
+                    '&:hover': { bgcolor: 'rgba(255, 255, 255, 0.1)' },
+                  }}
+                >
+                  <StarBorder sx={{ fontSize: 24 }} />
+                </IconButton>
+              </Box>
             </Box>
           </Box>
         </Box>
