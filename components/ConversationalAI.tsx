@@ -53,7 +53,7 @@ interface ConversationalAIProps {
 // Green Logo Component - using PNG image
 const GreenLogo = ({ size = 24 }: { size?: number }) => (
   <img
-    src="/logo.png"
+    src="/logo-png.png"
     alt="CO2 AI Logo"
     width={size}
     height={size}
